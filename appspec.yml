@@ -1,0 +1,18 @@
+version: 0.0 # CodeDeploy 버전
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/build/
+    overwrite: yes
+
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  ApplicationStart:
+    - location: application-start.sh
+      timeout: 60
+      runas: ubuntu
