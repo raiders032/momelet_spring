@@ -1,0 +1,21 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/build
+    overwirte: yes
+
+permissions:
+  - object: /
+    pattern: "**"
+    owner: jenkins
+    group: jenkins
+
+hooks:
+  BeforeInstall:
+    - location: deploy-before.sh
+      runas: ubuntu
+  ApplicationStart:
+    - location: deploy.sh
+      timeout: 60정
+      runas: ubuntu
