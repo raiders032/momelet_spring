@@ -13,7 +13,8 @@ node{
         sh 'cp scripts/*.sh before-deploy/'
         sh 'cp appspec.yml before-deploy/'
         sh 'cd before-deploy && zip -r before-deploy *'
-        sh 'cd ../ && mkdir -p deploy'
+        sh 'cd ../'
+        sh 'mkdir -p deploy'
         sh 'mv before-deploy/before-deploy.zip deploy/sprint1.zip'
     }
 
