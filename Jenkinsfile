@@ -1,6 +1,6 @@
 node{
     stage('SCM Checkout'){
-        git branch: 'cicd', credentialsId: 'gitlab', url: 'git@git.swmgit.org:swmaestro/recorder-1.git'
+        git branch: 'cicd', credentialsId: 'gitlab', url: 'https://git.swmgit.org/swmaestro/recorder-1.git'
     }
 
     stage('build & test'){
