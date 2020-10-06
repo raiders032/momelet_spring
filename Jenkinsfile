@@ -19,7 +19,9 @@ node{
     }
 
     stage ('upload to AWS S3'){
-        sh 'aws s3 cp deploy/sprint1.zip s3://cicd-spring/sprint1.zip --region ap-northeast-2'
+        withAWS(credentials:"$AWS_CREDENTIALS") {
+            sh 'aws s3 cp deploy/sprint1.zip s3://cicd-spring/sprint1.zip --region ap-northeast-2'
+        }
     }
 
     stage('deploy'){
