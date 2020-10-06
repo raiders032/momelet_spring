@@ -25,10 +25,12 @@ node{
     }
 
     stage('deploy'){
+      withAWS(credentials:"$AWS_CREDENTIALS") {
         sh 'aws deploy create-deployment \
-            --application-name backend-spring \
-            --deployment-group-name backend-spring-group \
-            --region ap-northeast-2 \
-            --s3-location bucket=cicd-spring,bundleType=zip,key=sprint1.zip'
+               --application-name backend-spring \
+               --deployment-group-name backend-spring-group \
+               --region ap-northeast-2 \
+               --s3-location bucket=cicd-spring,bundleType=zip,key=sprint1.zip'
+      }
     }
 }
