@@ -2,10 +2,8 @@ package com.swm.sprint1.controller;
 
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.MenuDto;
-import com.swm.sprint1.repository.MenuRepository;
+import com.swm.sprint1.payload.response.MenuResponseDto;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
-import com.swm.sprint1.security.CurrentUser;
-import com.swm.sprint1.security.UserPrincipal;
 import com.swm.sprint1.service.MenuService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ import java.util.List;
 public class MenuController {
 
     private final MenuService menuService;
-    private final RestaurantRepository restaurantRepository;
 
     @ApiOperation(value = "식당 메뉴 추가" , notes = "해당 식당의 메뉴를 추가합니다.")
     @PostMapping("/api/v1/restaurant/{restaurantId}/menu")
@@ -37,11 +34,14 @@ public class MenuController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "식당 메뉴 삭제", notes = "해당 식당의 메뉴를 삭제합니다.")
-    @DeleteMapping("/api/v1/restaurant/{restaurantId}/menu/{menuId}")
-    public ResponseEntity<?> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId){
-        menuService.deleteMenu(restaurantId, menuId);
-        ApiResponse response = new ApiResponse(true, "식당 메뉴 삭제 완료");
+    @ApiOperation(value="메뉴 조회", notes="해당 식당의 메뉴를 조회합니다.")
+    @GetMapping("/api/v1/restaurant/{restaurantId}/menu")
+    public ResponseEntity<?> getMenu(@PathVariable Long restaurantId){
+
+        List<MenuResponseDto> allMenu = menuService.getAllMenu(restaurantId);
+
+        ApiResponse response = new ApiResponse(true, "식당 메뉴 조회 완료");
+        response.putData("menu", allMenu);
         return ResponseEntity.ok(response);
     }
 
@@ -53,6 +53,13 @@ public class MenuController {
         ApiResponse response = new ApiResponse(true, "식당 메뉴 수정 완료");
         return ResponseEntity.ok(response);
     }
-    
+
+    @ApiOperation(value = "식당 메뉴 삭제", notes = "해당 식당의 메뉴를 삭제합니다.")
+    @DeleteMapping("/api/v1/restaurant/{restaurantId}/menu/{menuId}")
+    public ResponseEntity<?> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId){
+        menuService.deleteMenu(restaurantId, menuId);
+        ApiResponse response = new ApiResponse(true, "식당 메뉴 삭제 완료");
+        return ResponseEntity.ok(response);
+    }
 
 }

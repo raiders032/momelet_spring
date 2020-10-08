@@ -6,9 +6,8 @@ import com.swm.sprint1.domain.Menu;
 import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.exception.ResourceNotFoundException;
-import com.swm.sprint1.payload.response.AuthResponse;
-import com.swm.sprint1.payload.response.MenuDto;
-import com.swm.sprint1.repository.MenuRepository;
+import com.swm.sprint1.payload.response.*;
+import com.swm.sprint1.repository.menu.MenuRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
 import com.swm.sprint1.service.AuthService;
@@ -21,12 +20,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -145,5 +145,41 @@ class MenuControllerTest {
                 .andExpect(jsonPath("$.success").value("true"));
         assertThat(findMenu.getName()).isEqualTo(name);
         assertThat(findMenu.getPrice()).isEqualTo(price);
+    }
+
+    @DisplayName("메뉴 조회")
+    @Test
+    void getMenu() throws Exception{
+        //given
+        Long restaurantId = 1L;
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId, "210"));
+
+        Menu menu1 = new Menu(restaurant, "menu1", 10000, false);
+        Menu menu2 = new Menu(restaurant, "menu2", 20000, false);
+        Menu menu3 = new Menu(restaurant, "menu3", 30000, false);
+
+        Menu save1 = menuRepository.save(menu1);
+        Menu save2 = menuRepository.save(menu2);
+        Menu save3 = menuRepository.save(menu3);
+
+        String uri = "/api/v1/restaurant/" + restaurantId + "/menu/";
+
+        //when
+
+        MvcResult result = mockMvc.perform(get(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andReturn();
+
+        //then
+        String contentAsString = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        ApiResponse apiResponse = objectMapper.readValue(contentAsString, ApiResponse.class);
+        List<MenuResponseDto> menu = (List<MenuResponseDto>) apiResponse.getData().get("menu");
+        assertThat(menu.size()).isEqualTo(3);
+        assertThat(menu).extracting("name").containsOnly("menu1", "menu2", "menu3");
+        assertThat(menu).extracting("price").containsOnly(10000, 20000, 30000);
+
     }
 }

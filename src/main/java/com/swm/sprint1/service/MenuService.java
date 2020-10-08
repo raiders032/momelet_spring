@@ -4,7 +4,8 @@ import com.swm.sprint1.domain.Menu;
 import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.exception.ResourceNotFoundException;
 import com.swm.sprint1.payload.response.MenuDto;
-import com.swm.sprint1.repository.MenuRepository;
+import com.swm.sprint1.payload.response.MenuResponseDto;
+import com.swm.sprint1.repository.menu.MenuRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,9 @@ public class MenuService {
     public void updateMenu(Long restaurantId, Long menuId, MenuDto menuDto) {
         Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId);
         menu.update(menuDto.getName(), menuDto.getPrice());
+    }
+
+    public List<MenuResponseDto> getAllMenu(Long restaurantId) {
+        return menuRepository.findMenuResponseDto(restaurantId);
     }
 }
