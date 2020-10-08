@@ -3,10 +3,13 @@ package com.swm.sprint1.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swm.sprint1.domain.AuthProvider;
 import com.swm.sprint1.domain.Menu;
+import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.domain.User;
+import com.swm.sprint1.exception.ResourceNotFoundException;
 import com.swm.sprint1.payload.response.AuthResponse;
 import com.swm.sprint1.payload.response.MenuDto;
 import com.swm.sprint1.repository.MenuRepository;
+import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
 import com.swm.sprint1.service.AuthService;
 import org.junit.jupiter.api.AfterEach;
@@ -18,13 +21,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -34,10 +40,10 @@ class MenuControllerTest {
 
     private static User user;
     private static String accessToken;
-    private static String refreshToken;
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
     @Autowired private MenuRepository menuRepository;
+    @Autowired private RestaurantRepository restaurantRepository;
 
     @BeforeAll
     static void init(@Autowired UserRepository userRepository,
@@ -56,11 +62,10 @@ class MenuControllerTest {
 
         AuthResponse accessAndRefreshToken = authService.createAccessAndRefreshToken(user.getId());
         accessToken = accessAndRefreshToken.getAccessToken().getJwtToken();
-        refreshToken = accessAndRefreshToken.getRefreshToken().getJwtToken();
     }
 
     @AfterEach
-    void delete(){
+    void afterEach(){
         menuRepository.deleteAll();
     }
 
@@ -87,5 +92,58 @@ class MenuControllerTest {
         List<Menu> menus = menuRepository.findByRestaurantId(restaurantId);
         assertThat(menus).extracting("name").contains("menu1", "menu2", "menu3");
         assertThat(menus).extracting("price").contains(1000, 2000, 3000);
+    }
+
+    @DisplayName("메뉴 삭제")
+    @Test
+    void deleteMenu() throws Exception {
+        //given
+        Long RestaurantId = 1L;
+        Restaurant restaurant = restaurantRepository.findById(RestaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", RestaurantId, "210"));
+        Menu menu = new Menu(restaurant, "menu1", 10000, false);
+        Menu save = menuRepository.save(menu);
+        String uri = "/api/v1/restaurant/" + RestaurantId + "/menu/" + save.getId();
+
+        //when
+        ResultActions resultActions = mockMvc.perform(delete(uri).header("authorization", "Bearer " + accessToken));
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"));
+        assertThat(menuRepository.existsById(save.getId())).isFalse();
+    }
+
+    @DisplayName("메뉴 수정")
+    @Test
+    void updateMenu() throws Exception{
+        //given
+        Long RestaurantId = 1L;
+        String name = "changedName";
+        int price = 20000;
+
+        Restaurant restaurant = restaurantRepository.findById(RestaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", RestaurantId, "210"));
+        Menu menu = new Menu(restaurant, "menu1", 10000, false);
+        Menu save = menuRepository.save(menu);
+        String uri = "/api/v1/restaurant/" + RestaurantId + "/menu/" + save.getId();
+        MenuDto menuDto = new MenuDto(name, price);
+
+        String content = objectMapper.writeValueAsString(menuDto);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                put(uri)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", "Bearer " + accessToken)
+                        .content(content));
+
+        //then
+        Menu findMenu = menuRepository.findById(save.getId()).orElseThrow(() -> new ResourceNotFoundException("Menu", "id", save.getId(), "210"));
+
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"));
+        assertThat(findMenu.getName()).isEqualTo(name);
+        assertThat(findMenu.getPrice()).isEqualTo(price);
     }
 }

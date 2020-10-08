@@ -28,4 +28,16 @@ public class MenuService {
         List<Menu> collect = menuDtoList.stream().map(menuDto -> new Menu(restaurant, menuDto)).collect(Collectors.toList());
         menuRepository.saveAll(collect);
     }
+
+    @Transactional
+    public void deleteMenu(Long restaurantId, Long menuId) {
+        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId);
+        menuRepository.delete(menu);
+    }
+
+    @Transactional
+    public void updateMenu(Long restaurantId, Long menuId, MenuDto menuDto) {
+        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId);
+        menu.update(menuDto.getName(), menuDto.getPrice());
+    }
 }
