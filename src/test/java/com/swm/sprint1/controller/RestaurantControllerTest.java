@@ -25,14 +25,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -63,6 +68,8 @@ public class RestaurantControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired private WebApplicationContext ctx;
+
     private final Logger logger = LoggerFactory.getLogger(RestaurantControllerTest.class);
 
     private User user1, user2, user3, user4;
@@ -77,6 +84,7 @@ public class RestaurantControllerTest {
 
     @Before
     public void init() {
+
         user1 = User.builder()
                 .name("유저1")
                 .email("user1@test.com")
@@ -161,7 +169,7 @@ public class RestaurantControllerTest {
                 .andReturn();
 
         //then
-        String contentAsString = result.getResponse().getContentAsString();
+        String contentAsString = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         ApiResponse apiResponse = objectMapper.readValue(contentAsString, ApiResponse.class);
         List<RestaurantDtoResponse> restaurants = (List<RestaurantDtoResponse>) apiResponse.getData().get("restaurants");
         assertThat(restaurants.size()).isEqualTo(100);

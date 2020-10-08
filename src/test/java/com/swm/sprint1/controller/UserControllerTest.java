@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -268,7 +269,6 @@ public class UserControllerTest {
         //then
         result
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.success").value("false"))
                 .andExpect(jsonPath("$.errorCode").value("402"))
                 .andExpect(status().isUnauthorized());
@@ -293,7 +293,6 @@ public class UserControllerTest {
         //then
         result
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.success").value("false"))
                 .andExpect(jsonPath("$.errorCode").value("404"))
                 .andExpect(status().isUnauthorized());
@@ -312,7 +311,7 @@ public class UserControllerTest {
                 .andReturn();
 
         //then
-        String content = result.getResponse().getContentAsString();
+        String content = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         ApiResponse apiResponse = objectMapper.readValue(content, ApiResponse.class);
         HashMap<String, Integer> categoires = (HashMap<String, Integer>) ((HashMap<String, Object>) apiResponse.getData().get("userInfo")).get("categories");
 
@@ -345,7 +344,6 @@ public class UserControllerTest {
         //then
         result
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.success").value("false"))
                 .andExpect(jsonPath("$.errorCode").value("402"))
                 .andExpect(status().isUnauthorized());
@@ -380,7 +378,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -389,7 +387,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.success").value("true"))
                 .andReturn();
 
-        String contentAsString = mvcResult.getResponse().getContentAsString();
+        String contentAsString = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         ApiResponse apiResponse = objectMapper.readValue(contentAsString, ApiResponse.class);
         List<Long> userLikingId = ((List<Integer>) apiResponse.getData().get("userLikingId")).stream().map(Long::new).collect(Collectors.toList());
 
@@ -429,7 +427,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -467,7 +465,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -494,7 +492,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -522,7 +520,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -550,7 +548,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -577,7 +575,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -605,7 +603,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -633,7 +631,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -671,7 +669,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
@@ -708,7 +706,7 @@ public class UserControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(uri)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
