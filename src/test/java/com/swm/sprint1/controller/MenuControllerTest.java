@@ -6,7 +6,10 @@ import com.swm.sprint1.domain.Menu;
 import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.exception.ResourceNotFoundException;
-import com.swm.sprint1.payload.response.*;
+import com.swm.sprint1.payload.response.ApiResponse;
+import com.swm.sprint1.payload.response.AuthResponse;
+import com.swm.sprint1.payload.response.MenuDto;
+import com.swm.sprint1.payload.response.MenuResponseDto;
 import com.swm.sprint1.repository.menu.MenuRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
@@ -24,7 +27,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -76,11 +78,8 @@ class MenuControllerTest {
         Long restaurantId = 1L;
         String uri = "/api/v1/restaurant/" + restaurantId + "/menu";
         MenuDto menu1 = new MenuDto("menu1", 1000);
-        MenuDto menu2 = new MenuDto("menu2", 2000);
-        MenuDto menu3 = new MenuDto("menu3", 3000);
-        List<MenuDto> menuDtos = Arrays.asList(menu1, menu2, menu3);
 
-        String content = objectMapper.writeValueAsString(menuDtos);
+        String content = objectMapper.writeValueAsString(menu1);
 
         //when
         mockMvc.perform(post(uri)
@@ -90,8 +89,9 @@ class MenuControllerTest {
                     .andExpect(status().isOk());
         //then
         List<Menu> menus = menuRepository.findByRestaurantId(restaurantId);
-        assertThat(menus).extracting("name").contains("menu1", "menu2", "menu3");
-        assertThat(menus).extracting("price").contains(1000, 2000, 3000);
+        assertThat(menus.size()).isEqualTo(1);
+        assertThat(menus.get(0).getName()).isEqualTo("menu1");
+        assertThat(menus.get(0).getPrice()).isEqualTo(1000);
     }
 
     @DisplayName("메뉴 삭제")

@@ -23,11 +23,11 @@ public class MenuService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public void createMenu(Long restaurantId, List<MenuDto> menuDtoList) {
+    public void createMenu(Long restaurantId, MenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId, "210"));
-        List<Menu> collect = menuDtoList.stream().map(menuDto -> new Menu(restaurant, menuDto)).collect(Collectors.toList());
-        menuRepository.saveAll(collect);
+        Menu menu = new Menu(restaurant, menuDto.getName(), menuDto.getPrice(), false);
+        menuRepository.save(menu);
     }
 
     @Transactional

@@ -26,11 +26,11 @@ public class MenuController {
     @ApiOperation(value = "식당 메뉴 추가" , notes = "해당 식당의 메뉴를 추가합니다.")
     @PostMapping("/api/v1/restaurant/{restaurantId}/menu")
     public ResponseEntity<?> createMenu(@PathVariable Long restaurantId,
-                                        @RequestBody @NotEmpty List<MenuDto> menuDto){
+                                        @RequestBody MenuDto menuDto){
 
         menuService.createMenu(restaurantId, menuDto);
 
-        ApiResponse response = new ApiResponse(true, "식당 메뉴 추가 완");
+        ApiResponse response = new ApiResponse(true, "식당 메뉴 추가 완료");
         return ResponseEntity.ok(response);
     }
 

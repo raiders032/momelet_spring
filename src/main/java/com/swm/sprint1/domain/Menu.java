@@ -34,7 +34,7 @@ public class Menu{
         this.price = menuDto.getPrice();
     }
 
-    public Menu(Restaurant restaurant,String name, int price, boolean isPopular) {
+    public Menu(Restaurant restaurant, String name, int price, boolean isPopular) {
         this.restaurant = restaurant;
         this.name=name;
         this.price= price;
