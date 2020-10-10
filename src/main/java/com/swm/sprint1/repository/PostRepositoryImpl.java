@@ -4,11 +4,13 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.swm.sprint1.domain.Post;
+import com.swm.sprint1.payload.request.PostSearchCondition;
 import com.swm.sprint1.payload.response.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import sun.tools.tree.BooleanExpression;
 
 import java.util.List;
 

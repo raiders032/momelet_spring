@@ -1,5 +1,6 @@
 package com.swm.sprint1.controller;
 
+import com.swm.sprint1.payload.request.PostSearchCondition;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.PostResponseDto;
 import com.swm.sprint1.security.CurrentUser;
@@ -46,6 +47,16 @@ public class PostController {
 
         ApiResponse response = new ApiResponse(true, "식당 정보 수정 요청 조회 완료");
         response.putData("posts", posts);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiOperation(value = "식당 정보 수정 요청 삭제", notes = "식당 정보 수정 요청을 삭제합니다.")
+    @DeleteMapping("/api/v1/post/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId){
+
+        postService.deletePost(postId);
+
+        ApiResponse response = new ApiResponse(true, "식당 정보 수정 요청 삭제 완료");
         return ResponseEntity.ok(response);
     }
 

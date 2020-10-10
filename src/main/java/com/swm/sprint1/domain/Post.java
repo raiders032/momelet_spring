@@ -30,6 +30,8 @@ public class Post {
     @Column(length = 500)
     private String claim;
 
+    private Boolean isDone = false;
+
     public Post(User user, Restaurant restaurant, String imageUrl, String claim) {
         this.user = user;
         this.restaurant = restaurant;

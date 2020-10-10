@@ -5,6 +5,7 @@ import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.exception.NotSupportedExtension;
 import com.swm.sprint1.exception.ResourceNotFoundException;
+import com.swm.sprint1.payload.request.PostSearchCondition;
 import com.swm.sprint1.payload.response.PostResponseDto;
 import com.swm.sprint1.repository.PostRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
@@ -69,5 +70,12 @@ public class PostService {
         }
         imageUrl = s3Uploader.upload(imageFile, dir);
         return imageUrl;
+    }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        if(!postRepository.existsById(postId))
+            throw new ResourceNotFoundException("Post", "id", postId, "240");
+        postRepository.deleteById(postId);
     }
 }
