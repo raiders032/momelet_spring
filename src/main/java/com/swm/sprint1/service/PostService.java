@@ -5,15 +5,16 @@ import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.exception.NotSupportedExtension;
 import com.swm.sprint1.exception.ResourceNotFoundException;
+import com.swm.sprint1.payload.response.PostResponseDto;
 import com.swm.sprint1.repository.PostRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
 import com.swm.sprint1.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +52,10 @@ public class PostService {
 
         Post post = new Post(user, restaurant, imageUrl, claim);
         postRepository.save(post);
+    }
+
+    public Page<PostResponseDto> getPost(Pageable pageable) {
+        return postRepository.findAllPostResponseDto(pageable);
     }
 
     public String uploadImageFile(MultipartFile imageFile) throws IOException {
