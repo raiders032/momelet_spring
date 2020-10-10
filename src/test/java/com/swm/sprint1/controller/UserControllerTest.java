@@ -72,8 +72,6 @@ public class UserControllerTest {
 
     private String accessToken, refreshToken;
 
-
-
    @BeforeClass
     public static void init_once(){
         latitude = BigDecimal.valueOf(37.5435750);

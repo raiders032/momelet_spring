@@ -42,7 +42,7 @@ public class S3Uploader {
         removeNewFile(uploadFile);
         return imageUrl
                 .replace("momelet.s3.ap-northeast-2.amazonaws.com", "dz1rd925xfsaa.cloudfront.net")
-                .replace(profileDir, "profile/resized-images")
+                .replace(dirName,  dirName.substring(0, dirName.indexOf('/')) + "/resized-images")
                 .replace(uuid, uuid + "_640x640");
     }
 
