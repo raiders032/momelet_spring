@@ -4,7 +4,7 @@ node{
     }
 
     stage('build & test'){
-        sh './gradlew build'
+        sh './gradlew clean build'
     }
 
     stage ('make zip file'){
