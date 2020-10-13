@@ -1,4 +1,4 @@
-package com.swm.sprint1.repository;
+package com.swm.sprint1.repository.post;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
