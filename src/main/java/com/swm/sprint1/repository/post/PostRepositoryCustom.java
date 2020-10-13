@@ -1,4 +1,4 @@
-package com.swm.sprint1.repository;
+package com.swm.sprint1.repository.post;
 
 import com.swm.sprint1.payload.request.PostSearchCondition;
 import com.swm.sprint1.payload.response.PostResponseDto;

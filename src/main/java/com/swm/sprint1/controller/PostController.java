@@ -27,7 +27,7 @@ public class PostController {
     private final PostService postService;
 
     @ApiOperation(value = "식당 정보 수정 요청", notes = "식당 정보 수정을 요청합니다.")
-    @PostMapping("/api/v1/post/restaurant/{restaurantId}")
+    @PostMapping("/api/v1/posts/restaurants/{restaurantId}")
     public ResponseEntity<?> createPost(@CurrentUser UserPrincipal userPrincipal,
                                         @PathVariable Long restaurantId,
                                         @RequestParam (required = false) MultipartFile imageFile,
@@ -40,7 +40,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "식당 정보 수정 요청 조회", notes = "식당 정보 수정 요청을 조회합니다.")
-    @GetMapping("/api/v1/post")
+    @GetMapping("/api/v1/posts")
     public ResponseEntity<?> getPost(Pageable pageable){
 
         Page<PostResponseDto> posts = postService.getPost(pageable);
@@ -51,7 +51,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "식당 정보 수정 요청 삭제", notes = "식당 정보 수정 요청을 삭제합니다.")
-    @DeleteMapping("/api/v1/post/{postId}")
+    @DeleteMapping("/api/v1/posts/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId){
 
         postService.deletePost(postId);
