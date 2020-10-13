@@ -7,7 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.swm.sprint1.domain.Category;
 import com.swm.sprint1.domain.Restaurant;
-import com.swm.sprint1.payload.response.RestaurantDtoResponse;
+import com.swm.sprint1.payload.response.RestaurantResponseDto;
 import com.swm.sprint1.payload.response.RetrieveRestaurantResponseV1;
 import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
@@ -44,7 +44,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
     }
 
     @Override
-    public List<RestaurantDtoResponse> findRestaurantDtoResponseByLatitudeAndLongitudeAndUserCategory(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Long id) {
+    public List<RestaurantResponseDto> findRestaurantDtoResponseByLatitudeAndLongitudeAndUserCategory(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Long id) {
         String sql =
                 "   SELECT  " +
                 "       r.restaurant_id, r.name, r.thum_url, " +
@@ -78,7 +78,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
                 .setParameter(4, longitude.add(radius))
                 .setParameter(5, id);
 
-        List<RestaurantDtoResponse> list = jpaResultMapper.list(query, RestaurantDtoResponse.class);
+        List<RestaurantResponseDto> list = jpaResultMapper.list(query, RestaurantResponseDto.class);
         return list;
     }
 
@@ -111,7 +111,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
     }
 
     @Override
-    public List<RestaurantDtoResponse> findRestaurant7(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, List<Long> ids) {
+    public List<RestaurantResponseDto> findRestaurant7(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, List<Long> ids) {
         String sql =
                 "   SELECT " +
                 "       f.restaurant_id, f.name, f.thum_url, " +
@@ -166,7 +166,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
                 .setParameter("lon2", longitude.add(radius))
                 .setParameter("ids", ids);
 
-        return jpaResultMapper.list(query, RestaurantDtoResponse.class);
+        return jpaResultMapper.list(query, RestaurantResponseDto.class);
     }
 
     @Override
