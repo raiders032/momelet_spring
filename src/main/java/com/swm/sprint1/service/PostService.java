@@ -68,7 +68,7 @@ public class PostService {
         if(!supportedExtension.contains(extension)) {
             throw new NotSupportedExtension(extension + "은 지원하지 않는 확장자입니다. jpg, jpeg, png만 지원합니다.");
         }
-        imageUrl = s3Uploader.upload(imageFile, dir);
+        imageUrl = s3Uploader.upload(imageFile, dir, null);
         return imageUrl;
     }
 

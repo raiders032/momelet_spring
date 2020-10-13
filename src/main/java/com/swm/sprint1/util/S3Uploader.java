@@ -27,22 +27,26 @@ public class S3Uploader {
     @Value("${app.s3.profile.dir}")
     private String profileDir;
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName, String resizedDir) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
-        return upload(uploadFile, dirName);
+        return upload(uploadFile, dirName, resizedDir);
     }
 
-    private String upload(File uploadFile, String dirName) {
+    private String upload(File uploadFile, String dirName, String resizedDir) {
         String fileName = uploadFile.getName();
         String uuid = UUID.randomUUID().toString();
         String fileNameOnly = fileName.substring(0,fileName.lastIndexOf("."));
         String newFileName = dirName + "/" + fileNameOnly + "_" + uuid + ".jpeg";
         String imageUrl = putS3(uploadFile, newFileName);
         removeNewFile(uploadFile);
-        return imageUrl
+
+        if(resizedDir == null)
+            return imageUrl;
+        else
+            return imageUrl
                 .replace("momelet.s3.ap-northeast-2.amazonaws.com", "dz1rd925xfsaa.cloudfront.net")
-                .replace(dirName,  dirName.substring(0, dirName.indexOf('/')) + "/resized-images")
+                .replace(dirName,  dirName.substring(0, dirName.indexOf('/')) + resizedDir)
                 .replace(uuid, uuid + "_640x640");
     }
 
