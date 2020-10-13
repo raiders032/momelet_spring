@@ -1,6 +1,7 @@
 package com.swm.sprint1.controller;
 
 import com.swm.sprint1.exception.RequestParamException;
+import com.swm.sprint1.payload.request.RestaurantSearchCondition;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.RestaurantResponseDto;
 import com.swm.sprint1.security.CurrentUser;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -69,4 +72,13 @@ public class RestaurantController {
         return ResponseEntity.ok(response);
     }
 
+    @ApiOperation(value="식당 검색", notes = "식당을 검색합니다.")
+    @GetMapping("/api/v1/restaurants")
+    public ResponseEntity<?> getRestaurant(Pageable pageable, RestaurantSearchCondition condition){
+        Page<RestaurantResponseDto> restaurants = restaurantService.getRestaurants(pageable, condition);
+
+        ApiResponse response = new ApiResponse(true);
+        response.putData("restaurants", restaurants);
+        return ResponseEntity.ok(response);
+    }
 }

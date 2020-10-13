@@ -1,11 +1,14 @@
 package com.swm.sprint1.service;
 
 import com.swm.sprint1.exception.RestaurantLessThan7Exception;
+import com.swm.sprint1.payload.request.RestaurantSearchCondition;
 import com.swm.sprint1.payload.response.RestaurantResponseDto;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +39,9 @@ public class RestaurantService {
             }
         }
         return restaurants;
+    }
+
+    public Page<RestaurantResponseDto> getRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
+        return restaurantRepository.findDto(pageable, condition);
     }
 }
