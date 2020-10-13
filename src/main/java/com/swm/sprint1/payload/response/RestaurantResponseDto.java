@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @NoArgsConstructor
-public class RestaurantDtoResponse {
+public class RestaurantResponseDto {
     private BigInteger id;
     private String name;
     private String thumUrl;
@@ -34,7 +34,7 @@ public class RestaurantDtoResponse {
     private BigInteger googleId;
     private String phoneNumber;
 
-    public RestaurantDtoResponse(BigInteger id, String name, String thumUrl, String menu, String categories, BigDecimal googleRating, Integer googleReviewCount, String openingHours, Integer priceLevel, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, BigInteger naverId, BigInteger googleId, String phoneNumber) {
+    public RestaurantResponseDto(BigInteger id, String name, String thumUrl, String menu, String categories, BigDecimal googleRating, Integer googleReviewCount, String openingHours, Integer priceLevel, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, BigInteger naverId, BigInteger googleId, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.thumUrl = thumUrl;
@@ -54,7 +54,7 @@ public class RestaurantDtoResponse {
             this.menu = Arrays.stream(menu.split("`")).map(MenuDto::new).collect(Collectors.toList());
     }
 
-    public RestaurantDtoResponse(Restaurant restaurant){
+    public RestaurantResponseDto(Restaurant restaurant){
         this.id = BigInteger.valueOf(restaurant.getId());
         this.name = restaurant.getName() ;
         this.thumUrl = restaurant.getThumUrl();

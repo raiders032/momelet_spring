@@ -1,21 +1,15 @@
 package com.swm.sprint1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.swm.sprint1.domain.AuthProvider;
 import com.swm.sprint1.domain.Category;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.AuthResponse;
-import com.swm.sprint1.payload.response.RestaurantDtoResponse;
+import com.swm.sprint1.payload.response.RestaurantResponseDto;
 import com.swm.sprint1.repository.category.CategoryRepository;
 import com.swm.sprint1.repository.user.UserRepository;
-import com.swm.sprint1.security.Token;
-import com.swm.sprint1.security.TokenProvider;
-import com.swm.sprint1.security.UserPrincipal;
 import com.swm.sprint1.service.AuthService;
-import org.assertj.core.api.AbstractListAssert;
-import org.assertj.core.api.ObjectAssert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,17 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -171,7 +160,7 @@ public class RestaurantControllerTest {
         //then
         String contentAsString = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         ApiResponse apiResponse = objectMapper.readValue(contentAsString, ApiResponse.class);
-        List<RestaurantDtoResponse> restaurants = (List<RestaurantDtoResponse>) apiResponse.getData().get("restaurants");
+        List<RestaurantResponseDto> restaurants = (List<RestaurantResponseDto>) apiResponse.getData().get("restaurants");
         assertThat(restaurants.size()).isEqualTo(100);
         assertThat(restaurants).extracting("categories").startsWith("중식");
     }
@@ -431,7 +420,7 @@ public class RestaurantControllerTest {
         //then
         String contentAsString = result.getResponse().getContentAsString();
         ApiResponse apiResponse = objectMapper.readValue(contentAsString, ApiResponse.class);
-        List<RestaurantDtoResponse> restaurants = (List<RestaurantDtoResponse>) apiResponse.getData().get("restaurants");
+        List<RestaurantResponseDto> restaurants = (List<RestaurantResponseDto>) apiResponse.getData().get("restaurants");
         assertThat(restaurants.size()).isEqualTo(7);
         assertThat(restaurants).extracting("categories").doesNotContain("치킨","고기","곱|대창","분식","주점", "양식", "패스트푸드", "세계음식", "찜|탕");
     }

@@ -2,7 +2,7 @@ package com.swm.sprint1.controller;
 
 import com.swm.sprint1.exception.RequestParamException;
 import com.swm.sprint1.payload.response.ApiResponse;
-import com.swm.sprint1.payload.response.RestaurantDtoResponse;
+import com.swm.sprint1.payload.response.RestaurantResponseDto;
 import com.swm.sprint1.security.CurrentUser;
 import com.swm.sprint1.security.UserPrincipal;
 import com.swm.sprint1.service.RestaurantService;
@@ -13,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -49,7 +46,7 @@ public class RestaurantController {
             logger.error("jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다.");
             throw new RequestParamException("jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다. :" + id, "103");
         }
-        List<RestaurantDtoResponse> restaurants = restaurantService.findRestaurantDtoResponse(latitude, longitude, radius, userPrincipal.getId());
+        List<RestaurantResponseDto> restaurants = restaurantService.findRestaurantDtoResponse(latitude, longitude, radius, userPrincipal.getId());
         ApiResponse response = new ApiResponse(true);
         response.putData("restaurants", restaurants);
 
@@ -65,10 +62,11 @@ public class RestaurantController {
                                                                @RequestParam @DecimalMin("0.001") @DecimalMax("0.02") BigDecimal radius){
         logger.debug("getRestaurant7SimpleCategoryBased 호출되었습니다.");
         List<Long> ids = Arrays.stream(id.split(",")).map(Long::parseLong).collect(Collectors.toList());
-        List<RestaurantDtoResponse> restaurants = restaurantService.findRestaurant7SimpleCategoryBased(ids,longitude,latitude,radius);
+        List<RestaurantResponseDto> restaurants = restaurantService.findRestaurant7SimpleCategoryBased(ids,longitude,latitude,radius);
         ApiResponse response = new ApiResponse(true);
         response.putData("restaurants", restaurants);
 
         return ResponseEntity.ok(response);
     }
+
 }
