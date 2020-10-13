@@ -24,4 +24,9 @@ public class Bookmark extends DateEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    public Bookmark(User user, Restaurant restaurant) {
+        this.user = user;
+        this.restaurant = restaurant;
+    }
 }
