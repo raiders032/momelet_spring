@@ -1,6 +1,5 @@
 package com.swm.sprint1.controller;
 
-import com.swm.sprint1.payload.request.PostSearchCondition;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.PostResponseDto;
 import com.swm.sprint1.security.CurrentUser;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
-import java.util.List;
 
 @PreAuthorize("hasRole('USER')")
 @RequiredArgsConstructor

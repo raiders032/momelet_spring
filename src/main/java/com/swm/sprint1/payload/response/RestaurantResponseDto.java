@@ -54,6 +54,17 @@ public class RestaurantResponseDto {
             this.menu = Arrays.stream(menu.split("`")).map(MenuDto::new).collect(Collectors.toList());
     }
 
+    public RestaurantResponseDto(Long id, String name, String thumUrl, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, String phoneNumber) {
+        this.id = BigInteger.valueOf(id);
+        this.name = name;
+        this.thumUrl = thumUrl;
+        this.address = address;
+        this.roadAddress = roadAddress;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.phoneNumber = phoneNumber;
+    }
+
     public RestaurantResponseDto(Restaurant restaurant){
         this.id = BigInteger.valueOf(restaurant.getId());
         this.name = restaurant.getName() ;

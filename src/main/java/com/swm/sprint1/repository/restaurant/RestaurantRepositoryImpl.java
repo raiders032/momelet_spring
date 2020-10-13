@@ -1,22 +1,30 @@
 package com.swm.sprint1.repository.restaurant;
 
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.swm.sprint1.domain.Bookmark;
 import com.swm.sprint1.domain.Category;
 import com.swm.sprint1.domain.Restaurant;
+import com.swm.sprint1.payload.request.RestaurantSearchCondition;
 import com.swm.sprint1.payload.response.RestaurantResponseDto;
 import com.swm.sprint1.payload.response.RetrieveRestaurantResponseV1;
 import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.swm.sprint1.domain.QBookmark.bookmark;
 import static com.swm.sprint1.domain.QCategory.category;
 import static com.swm.sprint1.domain.QRestaurant.*;
 import static com.swm.sprint1.domain.QRestaurantCategory.*;
@@ -179,12 +187,41 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
                 .fetch();
     }
 
-    private BooleanExpression latitudeBetween(BigDecimal latitude, BigDecimal length){
-        return latitude != null ? restaurant.latitude.between(latitude.subtract(length), latitude.add(length)) : null;
+    @Override
+    public Page<RestaurantResponseDto> findDto(Pageable pageable, RestaurantSearchCondition condition) {
+        List<RestaurantResponseDto> content = queryFactory
+                .select(Projections.constructor(RestaurantResponseDto.class,
+                        restaurant.id, restaurant.name, restaurant.thumUrl,
+                        restaurant.address, restaurant.roadAddress,
+                        restaurant.longitude, restaurant.latitude, restaurant.phoneNumber))
+                .from(restaurant)
+                .where(nameLike(condition.getName()),
+                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
+                        longitudeBetween(condition.getLongitude(), condition.getRadius()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Restaurant> countQuery = queryFactory
+                .select(restaurant)
+                .from(restaurant)
+                .where(nameLike(condition.getName()),
+                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
+                        longitudeBetween(condition.getLongitude(), condition.getRadius()));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
-    private BooleanExpression longitudeBetween(BigDecimal longitude, BigDecimal length){
-        return longitude != null ? restaurant.longitude.between(longitude.subtract(length), longitude.add(length)) : null;
+    private BooleanExpression nameLike(String name) {
+        return name != null ? restaurant.name.like("%"+name+"%") : null;
+    }
+
+    private BooleanExpression latitudeBetween(BigDecimal latitude, BigDecimal radius){
+        return latitude != null ? restaurant.latitude.between(latitude.subtract(radius), latitude.add(radius)) : null;
+    }
+
+    private BooleanExpression longitudeBetween(BigDecimal longitude, BigDecimal radius){
+        return longitude != null ? restaurant.longitude.between(longitude.subtract(radius), longitude.add(radius)) : null;
     }
 
     private BooleanExpression restaurantInUserCategory(List<Category> categoryList){
