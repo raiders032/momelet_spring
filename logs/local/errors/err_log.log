@@ -1,0 +1,146 @@
+2020-10-21 | 11:32:31.702 | main                 | ERROR | o.s.b.SpringApplication   | ID:          | Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Invocation of init method failed; nested exception is javax.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [user_id] in table [restaurant_photo]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1794)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:594)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1109)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:869)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:747)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:124)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:99)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:124)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:123)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.getApplicationContext(SpringExtension.java:202)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.resolveParameter(SpringExtension.java:188)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.resolveParameter(ExecutableInvoker.java:216)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.resolveParameters(ExecutableInvoker.java:183)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.resolveParameters(ExecutableInvoker.java:144)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:96)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeBeforeAllMethods$8(ClassBasedTestDescriptor.java:371)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeBeforeAllMethods(ClassBasedTestDescriptor.java:369)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.before(ClassBasedTestDescriptor.java:193)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.before(ClassBasedTestDescriptor.java:77)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:132)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:125)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:135)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:122)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:80)
+	at java.util.ArrayList.forEach(ArrayList.java:1257)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:125)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:135)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:122)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:80)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:32)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:51)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:229)
+	at org.junit.platform.launcher.core.DefaultLauncher.lambda$execute$6(DefaultLauncher.java:197)
+	at org.junit.platform.launcher.core.DefaultLauncher.withInterceptedStreams(DefaultLauncher.java:211)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:191)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:128)
+	at com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:69)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:33)
+	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:230)
+	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:58)
+Caused by: javax.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [user_id] in table [restaurant_photo]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:403)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:378)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1790)
+	... 57 common frames omitted
+Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [user_id] in table [restaurant_photo]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:136)
+	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:42)
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:89)
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:68)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:192)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:73)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:316)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:469)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1259)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:58)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:391)
+	... 61 common frames omitted
+2020-10-21 | 11:41:06.367 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLiking[2].liking: must not be null, createUserLiking.userLikingReqeust.userLiking[0].liking: must not be null, createUserLiking.userLikingReqeust.userLiking[4].liking: must not be null, createUserLiking.userLikingReqeust.userLiking[3].liking: must not be null, createUserLiking.userLikingReqeust.userLiking[1].liking: must not be null, createUserLiking.userLikingReqeust.userLiking[5].liking: must not be null, createUserLiking.userLikingReqeust.userLiking[6].liking: must not be null
+2020-10-21 | 11:41:07.385 | Test worker          | ERROR | c.s.s.c.UserController    | ID:          | jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다.
+2020-10-21 | 11:41:07.386 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다. :98123
+2020-10-21 | 11:41:07.720 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | restaurant not found with id : '식당  존재하지 않는 식당 아이디가 포함되어 있습니다.'
+2020-10-21 | 11:41:07.948 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | updateUserInfo.categories: must not be empty
+2020-10-21 | 11:41:08.230 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | jwt token은 Bearer로 시작해야 합니다
+2020-10-21 | 11:41:08.455 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLatitude: must be less than or equal to 90
+2020-10-21 | 11:41:09.182 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | jwt token은 Bearer로 시작해야 합니다
+2020-10-21 | 11:41:09.400 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLatitude: must not be null
+2020-10-21 | 11:41:09.611 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | updateUserInfo.name: must not be blank
+2020-10-21 | 11:41:10.757 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLatitude: must be greater than or equal to -90
+2020-10-21 | 11:41:10.963 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLongitude: must be less than or equal to 180
+2020-10-21 | 11:41:11.184 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLiking[2].elapsedTime: must not be null, createUserLiking.userLikingReqeust.userLiking[6].elapsedTime: must not be null, createUserLiking.userLikingReqeust.userLiking[4].elapsedTime: must not be null, createUserLiking.userLikingReqeust.userLiking[5].elapsedTime: must not be null, createUserLiking.userLikingReqeust.userLiking[3].elapsedTime: must not be null, createUserLiking.userLikingReqeust.userLiking[1].elapsedTime: must not be null, createUserLiking.userLikingReqeust.userLiking[0].elapsedTime: must not be null
+2020-10-21 | 11:41:11.359 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다
+2020-10-21 | 11:41:11.359 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다.
+2020-10-21 | 11:41:11.574 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLongitude: must be greater than or equal to -180
+2020-10-21 | 11:41:11.749 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다
+2020-10-21 | 11:41:11.749 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다.
+2020-10-21 | 11:41:11.962 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLiking[6].restaurantId: must not be null, createUserLiking.userLikingReqeust.userLiking[2].restaurantId: must not be null, createUserLiking.userLikingReqeust.userLiking[4].restaurantId: must not be null, createUserLiking.userLikingReqeust.userLiking[0].restaurantId: must not be null, createUserLiking.userLikingReqeust.userLiking[1].restaurantId: must not be null, createUserLiking.userLikingReqeust.userLiking[3].restaurantId: must not be null, createUserLiking.userLikingReqeust.userLiking[5].restaurantId: must not be null
+2020-10-21 | 11:41:12.171 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | createUserLiking.userLikingReqeust.userLongitude: must not be null
+2020-10-21 | 11:41:12.863 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurantWithUserCategory.longitude: must be greater than or equal to 122
+2020-10-21 | 11:41:13.220 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Required BigDecimal parameter 'radius' is not present
+2020-10-21 | 11:41:13.568 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurantWithUserCategory.latitude: must be less than or equal to 43
+2020-10-21 | 11:41:13.885 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다
+2020-10-21 | 11:41:13.885 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다.
+2020-10-21 | 11:41:14.230 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.radius: must be greater than or equal to 0.001
+2020-10-21 | 11:41:14.537 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | jwt token은 Bearer로 시작해야 합니다
+2020-10-21 | 11:41:14.876 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Required BigDecimal parameter 'latitude' is not present
+2020-10-21 | 11:41:15.292 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.id: must not be blank
+2020-10-21 | 11:41:16.074 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurantWithUserCategory.latitude: must be greater than or equal to 32
+2020-10-21 | 11:41:16.413 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Required BigDecimal parameter 'longitude' is not present
+2020-10-21 | 11:41:16.759 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.longitude: must be greater than or equal to 123
+2020-10-21 | 11:41:17.108 | Test worker          | ERROR | .s.c.RestaurantController | ID:          | jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다.
+2020-10-21 | 11:41:17.109 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다. :100
+2020-10-21 | 11:41:17.448 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurantWithUserCategory.radius: must be less than or equal to 0.02
+2020-10-21 | 11:41:17.836 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Required BigDecimal parameter 'latitude' is not present
+2020-10-21 | 11:41:18.173 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Required BigDecimal parameter 'radius' is not present
+2020-10-21 | 11:41:18.511 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.latitude: must be greater than or equal to 32
+2020-10-21 | 11:41:18.880 | Test worker          | ERROR | c.s.s.s.RestaurantService | ID:          | 선택된 식당 카드가 7장 미만입니다.
+2020-10-21 | 11:41:18.897 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 선택된 식당 카드가 7장 미만입니다.
+2020-10-21 | 11:41:19.232 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurantWithUserCategory.radius: must be greater than or equal to 0.001
+2020-10-21 | 11:41:19.567 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.radius: must be less than or equal to 0.02
+2020-10-21 | 11:41:19.905 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.longitude: must be less than or equal to 133
+2020-10-21 | 11:41:20.597 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다
+2020-10-21 | 11:41:20.598 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다.
+2020-10-21 | 11:41:20.930 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurant7SimpleCategoryBased.latitude: must be less than or equal to 43
+2020-10-21 | 11:41:21.271 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | getRestaurantWithUserCategory.longitude: must be less than or equal to 133
+2020-10-21 | 11:41:21.568 | Test worker          | ERROR | TokenAuthenticationFilter | ID:          | jwt token은 Bearer로 시작해야 합니다
+2020-10-21 | 11:41:21.897 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Required BigDecimal parameter 'longitude' is not present
+2020-10-21 | 11:41:22.130 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Expired JWT token
+2020-10-21 | 11:41:22.888 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. refresh token이 필요합니다
+2020-10-21 | 11:41:22.907 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 토큰 타입이 불일치 합니다. refresh token이 필요합니다.
+2020-10-21 | 11:41:24.147 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 유저(17150) 저장된 리프레시 토큰과 일치하지 않습니다.
+2020-10-21 | 11:41:24.147 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 유저(17150) 저장된 리프레시 토큰과 일치하지 않습니다.
+2020-10-21 | 11:41:26.904 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. refresh token이 필요합니다
+2020-10-21 | 11:41:26.915 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 토큰 타입이 불일치 합니다. refresh token이 필요합니다.
+2020-10-21 | 11:41:29.483 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 유저(17157) 저장된 리프레시 토큰과 일치하지 않습니다.
+2020-10-21 | 11:41:29.494 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 유저(17157) 저장된 리프레시 토큰과 일치하지 않습니다.
+2020-10-21 | 11:41:29.692 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | Expired JWT token
+2020-10-21 | 11:41:29.834 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다
+2020-10-21 | 11:41:29.835 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 토큰 타입이 불일치 합니다. accsse token이 필요합니다.
+2020-10-21 | 11:41:29.980 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 토큰 타입이 불일치 합니다. refresh token이 필요합니다
+2020-10-21 | 11:41:29.980 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 토큰 타입이 불일치 합니다. refresh token이 필요합니다.
+2020-10-21 | 11:41:31.207 | Test worker          | ERROR | c.s.s.s.TokenProvider     | ID:          | 유저(17161) 저장된 리프레시 토큰과 일치하지 않습니다.
+2020-10-21 | 11:41:31.225 | Test worker          | ERROR | nseEntityExceptionHandler | ID:          | 유저(17161) 저장된 리프레시 토큰과 일치하지 않습니다.

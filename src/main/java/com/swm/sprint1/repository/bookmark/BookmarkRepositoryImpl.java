@@ -1,4 +1,4 @@
-package com.swm.sprint1.repository;
+package com.swm.sprint1.repository.bookmark;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -16,7 +16,7 @@ import static com.swm.sprint1.domain.QBookmark.bookmark;
 import static com.swm.sprint1.domain.QRestaurant.restaurant;
 
 @RequiredArgsConstructor
-public class BookmarkRepositoryImpl implements  BookmarkRepositoryCustom{
+public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
@@ -32,7 +32,6 @@ public class BookmarkRepositoryImpl implements  BookmarkRepositoryCustom{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
 
         JPAQuery<Bookmark> countQuery = queryFactory
                 .select(bookmark)

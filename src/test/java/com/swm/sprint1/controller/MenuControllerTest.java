@@ -73,7 +73,7 @@ class MenuControllerTest {
     void createMenu() throws Exception {
         //given
         Long restaurantId = 1L;
-        String uri = "/api/v1/restaurant/" + restaurantId + "/menu";
+        String uri = "/api/v1/restaurants/" + restaurantId + "/menu";
         MenuDto menu1 = new MenuDto("menu1", 1000);
 
         String content = objectMapper.writeValueAsString(menu1);
@@ -99,7 +99,7 @@ class MenuControllerTest {
         Restaurant restaurant = restaurantRepository.findById(RestaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", RestaurantId, "210"));
         Menu menu = new Menu(restaurant, "menu1", 10000, false);
         Menu save = menuRepository.save(menu);
-        String uri = "/api/v1/restaurant/" + RestaurantId + "/menu/" + save.getId();
+        String uri = "/api/v1/restaurants/" + RestaurantId + "/menu/" + save.getId();
 
         //when
         ResultActions resultActions = mockMvc.perform(delete(uri).header("authorization", "Bearer " + accessToken));
@@ -122,7 +122,7 @@ class MenuControllerTest {
         Restaurant restaurant = restaurantRepository.findById(RestaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", RestaurantId, "210"));
         Menu menu = new Menu(restaurant, "menu1", 10000, false);
         Menu save = menuRepository.save(menu);
-        String uri = "/api/v1/restaurant/" + RestaurantId + "/menu/" + save.getId();
+        String uri = "/api/v1/restaurants/" + RestaurantId + "/menu/" + save.getId();
         MenuDto menuDto = new MenuDto(name, price);
 
         String content = objectMapper.writeValueAsString(menuDto);
@@ -159,7 +159,7 @@ class MenuControllerTest {
         Menu save2 = menuRepository.save(menu2);
         Menu save3 = menuRepository.save(menu3);
 
-        String uri = "/api/v1/restaurant/" + restaurantId + "/menu/";
+        String uri = "/api/v1/restaurants/" + restaurantId + "/menu/";
 
         //when
 

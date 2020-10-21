@@ -5,7 +5,7 @@ import com.swm.sprint1.domain.Restaurant;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.exception.ResourceNotFoundException;
 import com.swm.sprint1.payload.response.BookmarkResponseDto;
-import com.swm.sprint1.repository.BookmarkRepository;
+import com.swm.sprint1.repository.bookmark.BookmarkRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;

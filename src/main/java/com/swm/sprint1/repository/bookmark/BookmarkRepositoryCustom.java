@@ -1,4 +1,4 @@
-package com.swm.sprint1.repository;
+package com.swm.sprint1.repository.bookmark;
 
 import com.swm.sprint1.payload.response.BookmarkResponseDto;
 import org.springframework.data.domain.Page;

@@ -122,6 +122,7 @@ public class UserControllerTest {
         logger.info("유저 리포지토 비우기");
         userLikingRepository.deleteAll();
         userRepository.deleteAll();
+
     }
 
     @Test
@@ -708,11 +709,10 @@ public class UserControllerTest {
                         .content(content)
                         .header("Authorization", "Bearer " + accessToken));
         //then
-        MvcResult mvcResult = resultActions
+        resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.success").value("false"))
-                .andExpect(jsonPath("$.errorCode").value("102"))
-                .andReturn();
+                .andExpect(jsonPath("$.errorCode").value("102"));
     }
 
 }

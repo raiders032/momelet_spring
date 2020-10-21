@@ -5,7 +5,8 @@ import com.swm.sprint1.domain.RestaurantPhoto;
 import com.swm.sprint1.domain.User;
 import com.swm.sprint1.exception.NotSupportedExtension;
 import com.swm.sprint1.exception.ResourceNotFoundException;
-import com.swm.sprint1.repository.RestaurantPhotoRepository;
+import com.swm.sprint1.payload.response.RestaurantPhotoResponseDto;
+import com.swm.sprint1.repository.photo.RestaurantPhotoRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
 import com.swm.sprint1.util.S3Uploader;
@@ -44,6 +45,11 @@ public class RestaurantPhotoService {
         restaurantPhotoRepository.save(restaurantPhoto);
     }
 
+
+    public List<RestaurantPhotoResponseDto> findByRestaurantId(Long restaurantId) {
+        return restaurantPhotoRepository.findDtoByRestaurantId(restaurantId);
+    }
+
     public String uploadImageFile(MultipartFile imageFile) throws IOException {
         log.debug("uploadImageFile 호출됨");
         String imageUrl;
@@ -56,4 +62,5 @@ public class RestaurantPhotoService {
         imageUrl = s3Uploader.upload(imageFile, dir,"/resized-images");
         return imageUrl;
     }
+
 }
