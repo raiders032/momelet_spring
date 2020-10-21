@@ -17,11 +17,22 @@ public class RestaurantPhoto {
     private Long id;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String filename;
 
     private String path;
+
+    public RestaurantPhoto(Restaurant restaurant, User user, String filename, String path) {
+        this.restaurant = restaurant;
+        this.user = user;
+        this.filename =filename;
+        this.path = path;
+    }
 }

@@ -18,7 +18,6 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("hasRole('USER')")
 public class MenuController {
 
     private final MenuService menuService;

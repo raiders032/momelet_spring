@@ -17,13 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
-@PreAuthorize("hasRole('USER')")
 @RequiredArgsConstructor
 @RestController
 public class PostController {
 
     private final PostService postService;
 
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation(value = "식당 정보 수정 요청", notes = "식당 정보 수정을 요청합니다.")
     @PostMapping("/api/v1/posts/restaurants/{restaurantId}")
     public ResponseEntity<?> createPost(@CurrentUser UserPrincipal userPrincipal,

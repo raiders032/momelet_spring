@@ -1,6 +1,5 @@
 package com.swm.sprint1.controller;
 
-import com.swm.sprint1.domain.Bookmark;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.BookmarkResponseDto;
 import com.swm.sprint1.security.CurrentUser;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @PreAuthorize("hasRole('USER')")
 @RequiredArgsConstructor
@@ -32,7 +29,7 @@ public class BookmarkController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "북마크 조회", notes = "북마크를 조회합니다..")
+    @ApiOperation(value = "북마크 조회", notes = "북마크를 조회합니다.")
     @GetMapping("/api/v1/bookmarks")
     public ResponseEntity<?> createBookmark(@CurrentUser UserPrincipal userPrincipal,
                                             Pageable pageable){
@@ -42,7 +39,7 @@ public class BookmarkController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "북마크 삭제", notes = "북마크를 삭제합니다..")
+    @ApiOperation(value = "북마크 삭제", notes = "북마크를 삭제합니다.")
     @DeleteMapping("/api/v1/bookmarks/{bookmarkId}")
     public ResponseEntity<?> deleteBookmark(@CurrentUser UserPrincipal userPrincipal,
                                             @PathVariable Long bookmarkId){
