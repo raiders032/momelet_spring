@@ -40,8 +40,17 @@ public class RestaurantPhotoController {
     public ResponseEntity<?> getPhoto(@PathVariable Long restaurantId){
         List<RestaurantPhotoResponseDto> photos = restaurantPhotoService.findByRestaurantId(restaurantId);
 
-        ApiResponse response = new ApiResponse(true, "식당 사진 저장완료");
+        ApiResponse response = new ApiResponse(true, "식당 사진 조회완");
         response.putData("photos", photos);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiOperation(value = "식당 사진 삭제", notes = "식당 사진을 삭제합니다.")
+    @DeleteMapping("/api/v1/photos/{photoId}")
+    public ResponseEntity<?> deletePhoto(@CurrentUser UserPrincipal userPrincipal,
+                                         @PathVariable Long photoId){
+        restaurantPhotoService.deletePhoto(userPrincipal.getId(), photoId);
+        ApiResponse response = new ApiResponse(true, "식당 사진 삭제완료");
         return ResponseEntity.ok(response);
     }
 }

@@ -27,27 +27,32 @@ public class S3Uploader {
     @Value("${app.s3.profile.dir}")
     private String profileDir;
 
-    public String upload(MultipartFile multipartFile, String dirName, String resizedDir) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
-        return upload(uploadFile, dirName, resizedDir);
+        return upload(uploadFile, dirName);
     }
 
-    private String upload(File uploadFile, String dirName, String resizedDir) {
+    private String upload(File uploadFile, String dirName) {
         String fileName = uploadFile.getName();
         String uuid = UUID.randomUUID().toString();
         String fileNameOnly = fileName.substring(0,fileName.lastIndexOf("."));
         String newFileName = dirName + "/" + fileNameOnly + "_" + uuid + ".jpeg";
         String imageUrl = putS3(uploadFile, newFileName);
         removeNewFile(uploadFile);
+        return imageUrl;
+    }
 
-        if(resizedDir == null)
-            return imageUrl;
-        else
-            return imageUrl
+    public String changeImageUrl(String imageUrl, String size){
+        return imageUrl
                 .replace("momelet.s3.ap-northeast-2.amazonaws.com", "dz1rd925xfsaa.cloudfront.net")
-                .replace(dirName,  dirName.substring(0, dirName.indexOf('/')) + resizedDir)
-                .replace(uuid, uuid + "_640x640");
+                .replace(profileDir, "profile/resized-images")
+                .replace(".jpeg", size + ".jpeg");
+    }
+
+    public String changeImageUrl(String imageUrl){
+        return imageUrl
+                .replace("momelet.s3.ap-northeast-2.amazonaws.com", "dz1rd925xfsaa.cloudfront.net");
     }
 
     private String putS3(File uploadFile, String fileName) {

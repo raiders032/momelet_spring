@@ -59,8 +59,14 @@ public class RestaurantPhotoService {
         if(!supportedExtension.contains(extension)) {
             throw new NotSupportedExtension(extension + "은 지원하지 않는 확장자입니다. jpg, jpeg, png만 지원합니다.");
         }
-        imageUrl = s3Uploader.upload(imageFile, dir,"/resized-images");
-        return imageUrl;
+        imageUrl = s3Uploader.upload(imageFile, dir);
+        return s3Uploader.changeImageUrl(imageUrl);
     }
 
+    @Transactional
+    public void deletePhoto(Long userId, Long id) {
+        RestaurantPhoto restaurantPhoto = restaurantPhotoRepository.findByUserIdAndId(userId, id)
+                .orElseThrow(()-> new ResourceNotFoundException("RestaurantPhoto", "id", id, "270"));
+        restaurantPhotoRepository.delete(restaurantPhoto);
+    }
 }
