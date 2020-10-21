@@ -130,6 +130,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             "/auth/**",
                             "/api/v1/auth/**",
                             "/api/v1/restaurants",
+                            "/api/v1/posts/**",
                             "/ws/**",
                             "/upload/*")
                         .permitAll()
