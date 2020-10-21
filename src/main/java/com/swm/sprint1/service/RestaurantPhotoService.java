@@ -63,4 +63,10 @@ public class RestaurantPhotoService {
         return imageUrl;
     }
 
+    @Transactional
+    public void deletePhoto(Long userId, Long id) {
+        RestaurantPhoto restaurantPhoto = restaurantPhotoRepository.findByUserIdAndId(userId, id)
+                .orElseThrow(()-> new ResourceNotFoundException("RestaurantPhoto", "id", id, "270"));
+        restaurantPhotoRepository.delete(restaurantPhoto);
+    }
 }
