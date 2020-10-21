@@ -25,7 +25,7 @@ public class RestaurantPhotoController {
     private final RestaurantPhotoService restaurantPhotoService;
 
     @ApiOperation(value = "식당 사진 저장", notes = "식당 사진을 저장합니다.")
-    @PostMapping("/api/v1/photo/restaurants/{restaurantId}")
+    @PostMapping("/api/v1/photos/restaurants/{restaurantId}")
     public ResponseEntity<?> createPhoto(@CurrentUser UserPrincipal userPrincipal,
                                          @PathVariable Long restaurantId,
                                          @RequestParam MultipartFile imageFile) throws IOException {
@@ -36,7 +36,7 @@ public class RestaurantPhotoController {
     }
 
     @ApiOperation(value = "식당 사진 조회", notes = "식당 사진을 조회합니다.")
-    @GetMapping("/api/v1/photo/restaurants/{restaurantId}")
+    @GetMapping("/api/v1/photos/restaurants/{restaurantId}")
     public ResponseEntity<?> getPhoto(@PathVariable Long restaurantId){
         List<RestaurantPhotoResponseDto> photos = restaurantPhotoService.findByRestaurantId(restaurantId);
 
