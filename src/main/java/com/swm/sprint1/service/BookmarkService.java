@@ -31,16 +31,16 @@ public class BookmarkService {
         bookmarkRepository.save(bookmark);
     }
 
-    public Page<BookmarkResponseDto> getBookmark(Long userId, Pageable pageable){
-        return bookmarkRepository.findAllByUserId(userId, pageable);
-    }
-
     @Transactional
     public void deleteBookmark(Long userId, Long bookmarkId) {
         Bookmark bookmark = bookmarkRepository.findByIdAndUserId(bookmarkId, userId).orElseThrow(
                 () -> new ResourceNotFoundException("Bookmark", "id", bookmarkId, "260")
         );
         bookmarkRepository.delete(bookmark);
+    }
+
+    public Page<BookmarkResponseDto> findDtosByUserId(Long userId, Pageable pageable) {
+        return bookmarkRepository.findDtosByUserId(userId, pageable);
     }
 }
 

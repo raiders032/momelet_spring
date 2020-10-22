@@ -33,7 +33,7 @@ public class BookmarkController {
     @GetMapping("/api/v1/bookmarks")
     public ResponseEntity<?> createBookmark(@CurrentUser UserPrincipal userPrincipal,
                                             Pageable pageable){
-        Page<BookmarkResponseDto> bookmarks = bookmarkService.getBookmark(userPrincipal.getId(), pageable);
+        Page<BookmarkResponseDto> bookmarks = bookmarkService.findDtosByUserId(userPrincipal.getId(), pageable);
         ApiResponse response = new ApiResponse(true, "북마크 조회 완료");
         response.putData("bookmarks", bookmarks);
         return ResponseEntity.ok(response);
@@ -47,7 +47,4 @@ public class BookmarkController {
         ApiResponse response = new ApiResponse(true, "북마크 삭제 완료");
         return ResponseEntity.ok(response);
     }
-
-
-
 }
