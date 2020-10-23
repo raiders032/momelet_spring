@@ -1,6 +1,5 @@
 package com.swm.sprint1.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +28,9 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant")
     private List<RestaurantCategory> restaurantCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<UserLiking> userLikings = new ArrayList<>();
 
     @Column(nullable = false)
     private String name;

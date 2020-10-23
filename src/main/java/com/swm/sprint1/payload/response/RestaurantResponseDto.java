@@ -33,6 +33,7 @@ public class RestaurantResponseDto {
     private BigInteger naverId;
     private BigInteger googleId;
     private String phoneNumber;
+    private Long like;
 
     public RestaurantResponseDto(BigInteger id, String name, String thumUrl, String menu, String categories, BigDecimal googleRating, Integer googleReviewCount, String openingHours, Integer priceLevel, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, BigInteger naverId, BigInteger googleId, String phoneNumber) {
         this.id = id;
@@ -54,6 +55,18 @@ public class RestaurantResponseDto {
             this.menu = Arrays.stream(menu.split("`")).map(MenuDto::new).collect(Collectors.toList());
     }
 
+    public RestaurantResponseDto(Long id, String name, String thumUrl, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, String phoneNumber, Long like) {
+        this.id = BigInteger.valueOf(id);
+        this.name = name;
+        this.thumUrl = thumUrl;
+        this.address = address;
+        this.roadAddress = roadAddress;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.phoneNumber = phoneNumber;
+        this.like = like;
+    }
+
     public RestaurantResponseDto(Long id, String name, String thumUrl, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, String phoneNumber) {
         this.id = BigInteger.valueOf(id);
         this.name = name;
@@ -65,27 +78,17 @@ public class RestaurantResponseDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public RestaurantResponseDto(Restaurant restaurant){
+    public RestaurantResponseDto(Restaurant restaurant, Long like){
         this.id = BigInteger.valueOf(restaurant.getId());
         this.name = restaurant.getName() ;
         this.thumUrl = restaurant.getThumUrl();
-        this.googleRating = restaurant.getGoogleRating();
-        this.googleReviewCount = restaurant.getGoogleReviewCount();
-        this.openingHours = restaurant.getOpeningHours();
-        this.priceLevel = restaurant.getPriceLevel();
         this.address = restaurant.getAddress();
         this.roadAddress = restaurant.getRoadAddress();
         this.longitude = restaurant.getLongitude();
         this.latitude = restaurant.getLatitude();
-        this.naverId = BigInteger.valueOf(restaurant.getNaverId());
-        this.googleId = null;
         this.phoneNumber = restaurant.getPhoneNumber();
-        this.categories = restaurant
-                .getRestaurantCategories().stream()
-                .map(restaurantCategory -> restaurantCategory.getCategory().getName())
-                .collect(Collectors.joining(","));
-        this.menu = restaurant.getMenuList()
-                .stream().map(MenuDto::new)
-                .collect(Collectors.toList());
+        this.menu = restaurant.getMenuList().stream().map(MenuDto::new).collect(Collectors.toList());
+        this.like = like;
     }
+
 }

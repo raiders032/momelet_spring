@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.swm.sprint1.domain.QBookmark.bookmark;
 import static com.swm.sprint1.domain.QRestaurant.restaurant;
+import static com.swm.sprint1.domain.QUserLiking.*;
 
 @RequiredArgsConstructor
 public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom{
@@ -21,23 +22,25 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<BookmarkResponseDto> findAllByUserId(Long userId, Pageable pageable) {
-        List<BookmarkResponseDto> content = queryFactory
+    public Page<BookmarkResponseDto> findDtosByUserId(Long userId, Pageable pageable) {
+        List<BookmarkResponseDto> contents = queryFactory
                 .select(Projections.fields(BookmarkResponseDto.class,
-                        bookmark.id, restaurant.id.as("restaurantId"), restaurant.name, restaurant.thumUrl))
+                        bookmark.id, restaurant.id.as("restaurantId"), restaurant.name, restaurant.thumUrl, userLiking.id.count().as("like")))
                 .from(bookmark)
                 .join(bookmark.restaurant, restaurant)
+                .join(restaurant.userLikings, userLiking)
                 .where(bookmark.user.id.eq(userId))
-                .orderBy(bookmark.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .groupBy(userLiking.restaurant.id)
                 .fetch();
 
         JPAQuery<Bookmark> countQuery = queryFactory
                 .select(bookmark)
                 .from(bookmark)
-                .where(bookmark.user.id.eq(userId));
+                .join(bookmark.restaurant, restaurant)
+                .join(restaurant.userLikings, userLiking)
+                .where(bookmark.user.id.eq(userId))
+                .groupBy(userLiking.restaurant.id);
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+        return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
 }
