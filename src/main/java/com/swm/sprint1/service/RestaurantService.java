@@ -22,6 +22,10 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final Logger logger = LoggerFactory.getLogger(RestaurantService.class);
 
+    public List<RestaurantResponseDto> findDtosByUserCategory(Long userId, BigDecimal longitude, BigDecimal latitude, BigDecimal radius) {
+        return restaurantRepository.findDtosByUserCategory(userId, longitude, latitude, radius);
+    }
+
     public List<RestaurantResponseDto> findRestaurantDtoResponse(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Long id) {
         logger.debug("findRestaurantDtoResponse 호출됨");
         return restaurantRepository.findRestaurantDtoResponseByLatitudeAndLongitudeAndUserCategory(latitude,longitude,radius,id);
@@ -43,9 +47,5 @@ public class RestaurantService {
 
     public Page<RestaurantResponseDto> getRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
         return restaurantRepository.findDto(pageable, condition);
-    }
-
-    public List<RestaurantResponseDto> findDtosByUserCategory(Long userId, RestaurantSearchCondition condition) {
-        return restaurantRepository.findDtosByUserCategory(userId, condition);
     }
 }

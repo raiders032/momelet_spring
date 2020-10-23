@@ -78,27 +78,17 @@ public class RestaurantResponseDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public RestaurantResponseDto(Restaurant restaurant){
+    public RestaurantResponseDto(Restaurant restaurant, Long like){
         this.id = BigInteger.valueOf(restaurant.getId());
         this.name = restaurant.getName() ;
         this.thumUrl = restaurant.getThumUrl();
-        this.googleRating = restaurant.getGoogleRating();
-        this.googleReviewCount = restaurant.getGoogleReviewCount();
-        this.openingHours = restaurant.getOpeningHours();
-        this.priceLevel = restaurant.getPriceLevel();
         this.address = restaurant.getAddress();
         this.roadAddress = restaurant.getRoadAddress();
         this.longitude = restaurant.getLongitude();
         this.latitude = restaurant.getLatitude();
-        this.naverId = BigInteger.valueOf(restaurant.getNaverId());
-        this.googleId = null;
         this.phoneNumber = restaurant.getPhoneNumber();
-        this.categories = restaurant
-                .getRestaurantCategories().stream()
-                .map(restaurantCategory -> restaurantCategory.getCategory().getName())
-                .collect(Collectors.joining(","));
-        this.menu = restaurant.getMenuList()
-                .stream().map(MenuDto::new)
-                .collect(Collectors.toList());
+        this.menu = restaurant.getMenuList().stream().map(MenuDto::new).collect(Collectors.toList());
+        this.like = like;
     }
+
 }

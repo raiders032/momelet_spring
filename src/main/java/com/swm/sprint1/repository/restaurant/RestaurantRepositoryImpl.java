@@ -1,5 +1,6 @@
 package com.swm.sprint1.repository.restaurant;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -21,9 +22,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.swm.sprint1.domain.QCategory.category;
-import static com.swm.sprint1.domain.QMenu.menu;
 import static com.swm.sprint1.domain.QRestaurant.*;
 import static com.swm.sprint1.domain.QRestaurantCategory.*;
 import static com.swm.sprint1.domain.QUserCategory.userCategory;
@@ -213,7 +214,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
     }
 
     @Override
-    public List<RestaurantResponseDto> findDtosByUserCategory(Long userId, RestaurantSearchCondition condition) {
+    public List<RestaurantResponseDto> findDtosByUserCategoryv1(Long userId, RestaurantSearchCondition condition) {
         QCategory c = new QCategory("c");
         return queryFactory
                 .select(Projections.constructor(RestaurantResponseDto.class,
@@ -237,6 +238,32 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
                 .orderBy(userLiking.id.count().desc())
                 .limit(100)
                 .fetch();
+    }
+
+    @Override
+    public List<RestaurantResponseDto> findDtosByUserCategory(Long userId, BigDecimal longitude, BigDecimal latitude, BigDecimal radius) {
+        QCategory c = new QCategory("c");
+        List<Tuple> tuples = queryFactory
+                .select(restaurant, userLiking.id.count().as("like"))
+                .from(restaurant)
+                .join(restaurant.restaurantCategories, restaurantCategory)
+                .leftJoin(restaurant.userLikings, userLiking)
+                .where( longitudeBetween(longitude, radius),
+                        latitudeBetween(latitude, radius),
+                        restaurantCategory.category.id.in(JPAExpressions
+                                .select(userCategory.category.id)
+                                .from(userCategory)
+                                .where(userCategory.user.id.eq(userId))))
+                .groupBy(restaurant.id)
+                .orderBy(Expressions.numberTemplate(Double.class, "rand()").asc())
+                .limit(100)
+                .fetch();
+
+        List<RestaurantResponseDto> restaurantResponseDtos = tuples.stream()
+                .map(tuple -> new RestaurantResponseDto(tuple.get(0, Restaurant.class), tuple.get(1, Long.class)))
+                .collect(Collectors.toList());
+
+        return restaurantResponseDtos;
     }
 
     private BooleanExpression nameLike(String name) {
