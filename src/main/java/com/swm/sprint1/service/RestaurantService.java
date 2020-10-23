@@ -44,4 +44,8 @@ public class RestaurantService {
     public Page<RestaurantResponseDto> getRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
         return restaurantRepository.findDto(pageable, condition);
     }
+
+    public List<RestaurantResponseDto> findDtosByUserCategory(Long userId, RestaurantSearchCondition condition) {
+        return restaurantRepository.findDtosByUserCategory(userId, condition);
+    }
 }

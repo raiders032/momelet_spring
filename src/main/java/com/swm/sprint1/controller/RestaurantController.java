@@ -81,4 +81,22 @@ public class RestaurantController {
         response.putData("restaurants", restaurants);
         return ResponseEntity.ok(response);
     }
+
+    @ApiOperation(value = "유저 카테고리 기반 식당 조회" , notes = "유저의 카테고리를 기반으로 하여 최대 100개의 주변 식당 목록을 반환합니다.")
+    @GetMapping("/api/v2/restaurants/users/{userId}/categories")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getRestaurantWithUserCategory2(@CurrentUser UserPrincipal userPrincipal,
+                                                            @PathVariable Long userId,
+                                                            RestaurantSearchCondition condition){
+        logger.debug("getRestaurantWithUserCategory 호출되었습니다.");
+        if(!userId.equals(userPrincipal.getId())) {
+            logger.error("jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다.");
+            throw new RequestParamException("jwt token의 유저 아이디와 path param 유저 아이디가 일치하지 않습니다. :" + userId, "103");
+        }
+        List<RestaurantResponseDto> restaurants = restaurantService.findDtosByUserCategory(userId, condition);
+        ApiResponse response = new ApiResponse(true);
+        response.putData("restaurants", restaurants);
+
+        return ResponseEntity.ok(response);
+    }
 }

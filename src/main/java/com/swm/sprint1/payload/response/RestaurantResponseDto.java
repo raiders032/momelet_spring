@@ -33,6 +33,7 @@ public class RestaurantResponseDto {
     private BigInteger naverId;
     private BigInteger googleId;
     private String phoneNumber;
+    private Long like;
 
     public RestaurantResponseDto(BigInteger id, String name, String thumUrl, String menu, String categories, BigDecimal googleRating, Integer googleReviewCount, String openingHours, Integer priceLevel, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, BigInteger naverId, BigInteger googleId, String phoneNumber) {
         this.id = id;
@@ -52,6 +53,18 @@ public class RestaurantResponseDto {
         this.phoneNumber = phoneNumber;
         if(menu != null)
             this.menu = Arrays.stream(menu.split("`")).map(MenuDto::new).collect(Collectors.toList());
+    }
+
+    public RestaurantResponseDto(Long id, String name, String thumUrl, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, String phoneNumber, Long like) {
+        this.id = BigInteger.valueOf(id);
+        this.name = name;
+        this.thumUrl = thumUrl;
+        this.address = address;
+        this.roadAddress = roadAddress;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.phoneNumber = phoneNumber;
+        this.like = like;
     }
 
     public RestaurantResponseDto(Long id, String name, String thumUrl, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, String phoneNumber) {
