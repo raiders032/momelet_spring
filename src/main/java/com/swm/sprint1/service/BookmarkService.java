@@ -42,5 +42,9 @@ public class BookmarkService {
     public Page<BookmarkResponseDto> findDtosByUserId(Long userId, Pageable pageable) {
         return bookmarkRepository.findDtosByUserId(userId, pageable);
     }
+
+    public boolean existsByUserIdAndRestaurantId(Long userId, Long restaurantId){
+        return bookmarkRepository.existsByUserIdAndRestaurantId(userId, restaurantId);
+    }
 }
 

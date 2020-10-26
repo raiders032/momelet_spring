@@ -24,7 +24,8 @@ public class BookmarkController {
     @PostMapping("/api/v1/bookmarks/restaurants/{restaurantId}")
     public ResponseEntity<?> createBookmark(@CurrentUser UserPrincipal userPrincipal,
                                             @PathVariable Long restaurantId){
-        bookmarkService.createBookmark(userPrincipal.getId(), restaurantId);
+        if(!bookmarkService.existsByUserIdAndRestaurantId(userPrincipal.getId(), restaurantId))
+            bookmarkService.createBookmark(userPrincipal.getId(), restaurantId);
         ApiResponse response = new ApiResponse(true, "북마크 생성 완료");
         return ResponseEntity.ok(response);
     }
