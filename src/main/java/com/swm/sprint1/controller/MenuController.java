@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
+@PreAuthorize("hasRole('ADMIN')")
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -33,7 +34,7 @@ public class MenuController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value="메뉴 조회", notes="해당 식당의 메뉴를 조회합니다.")
+    @ApiOperation(value="식당 메뉴 조회", notes="해당 식당의 메뉴를 조회합니다.")
     @GetMapping("/api/v1/restaurants/{restaurantId}/menu")
     public ResponseEntity<?> getMenu(@PathVariable Long restaurantId){
 

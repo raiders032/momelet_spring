@@ -1,24 +1,27 @@
 package com.swm.sprint1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.swm.sprint1.domain.AuthProvider;
-import com.swm.sprint1.domain.Menu;
-import com.swm.sprint1.domain.Restaurant;
-import com.swm.sprint1.domain.User;
+import com.swm.sprint1.domain.*;
 import com.swm.sprint1.exception.ResourceNotFoundException;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.AuthResponse;
 import com.swm.sprint1.payload.response.MenuDto;
 import com.swm.sprint1.payload.response.MenuResponseDto;
+import com.swm.sprint1.repository.AdminRepository;
 import com.swm.sprint1.repository.menu.MenuRepository;
 import com.swm.sprint1.repository.restaurant.RestaurantRepository;
 import com.swm.sprint1.repository.user.UserRepository;
+import com.swm.sprint1.security.TokenProvider;
 import com.swm.sprint1.service.AuthService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -37,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 class MenuControllerTest {
 
-    private static User user;
     private static String accessToken;
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
@@ -45,27 +47,36 @@ class MenuControllerTest {
     @Autowired private RestaurantRepository restaurantRepository;
 
     @BeforeAll
-    static void init(@Autowired UserRepository userRepository,
-                     @Autowired AuthService authService ){
-        user = User.builder()
-                .name("변경전이름")
-                .email("before@before.com")
-                .imageUrl("imageUrlBefore")
-                .provider(AuthProvider.local)
-                .providerId("test")
-                .userCategories(new HashSet<>())
-                .emailVerified(false)
+    static void init(@Autowired AdminRepository adminRepository,
+                     @Autowired AuthenticationManager authenticationManager,
+                     @Autowired TokenProvider tokenProvider,
+                     @Autowired PasswordEncoder passwordEncoder){
+
+        Admin admin = Admin.builder()
+                .username("관리자")
+                .password(passwordEncoder.encode("1234"))
+                .role("ROLE_ADMIN")
                 .build();
 
-        userRepository.save(user);
+        adminRepository.save(admin);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        "관리자",
+                        "1234"
+                )
+        );
 
-        AuthResponse accessAndRefreshToken = authService.createAccessAndRefreshToken(user.getId());
-        accessToken = accessAndRefreshToken.getAccessToken().getJwtToken();
+        accessToken = tokenProvider.createAdminAccessToken(authentication).getJwtToken();
     }
 
     @AfterEach
     void afterEach(){
         menuRepository.deleteAll();
+    }
+
+    @AfterAll
+    static void afterAll(@Autowired AdminRepository adminRepository){
+        adminRepository.deleteAll();
     }
 
     @DisplayName("메뉴 추가")

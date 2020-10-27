@@ -1,6 +1,5 @@
 package com.swm.sprint1.controller;
 
-import com.swm.sprint1.domain.RestaurantPhoto;
 import com.swm.sprint1.payload.response.ApiResponse;
 import com.swm.sprint1.payload.response.RestaurantPhotoResponseDto;
 import com.swm.sprint1.security.CurrentUser;
