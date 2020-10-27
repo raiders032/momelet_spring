@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 @RestController
 public class PostController {

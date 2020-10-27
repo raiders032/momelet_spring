@@ -4,7 +4,6 @@ import com.swm.sprint1.domain.UserRefreshToken;
 import com.swm.sprint1.payload.request.JwtDto;
 import com.swm.sprint1.payload.response.AuthResponse;
 import com.swm.sprint1.repository.user.UserRefreshTokenRepository;
-import com.swm.sprint1.repository.user.UserRepository;
 import com.swm.sprint1.security.CustomUserDetailsService;
 import com.swm.sprint1.security.Token;
 import com.swm.sprint1.security.TokenProvider;
@@ -24,7 +23,6 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final UserRepository userRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
 
     public Token refreshAccessToken(JwtDto jwtDto) {
@@ -94,6 +92,5 @@ public class AuthService {
 
         return new AuthResponse(accessToken, refreshToken);
     }
-
 
 }

@@ -16,6 +16,7 @@ import javax.validation.constraints.NotEmpty;
 public class MenuDto {
     @NotEmpty
     private String name;
+
     @Min(0)
     private int price;
 

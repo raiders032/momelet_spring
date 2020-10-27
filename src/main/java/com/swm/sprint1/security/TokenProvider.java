@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -38,6 +40,7 @@ public class TokenProvider {
         String accessTokenString = Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .claim("type", "access")
+                .claim("role", authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                 .setIssuedAt(new Date())
                 .setExpiration(accessExpiryDate)
                 .signWith(SignatureAlgorithm.HS512, encodedJwt)
@@ -55,6 +58,7 @@ public class TokenProvider {
         String accessTokenString = Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .claim("type", "access")
+                .claim("role", authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                 .setIssuedAt(new Date())
                 .setExpiration(accessExpiryDate)
                 .signWith(SignatureAlgorithm.HS512, encodedJwt)
@@ -97,26 +101,6 @@ public class TokenProvider {
         return new Token(refreshTokenString, refreshExpiryDate);
     }
 
-    public Long getUserIdFromToken(String token) {
-        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
-        Claims claims = Jwts.parser()
-                .setSigningKey(encodedJwt)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return Long.parseLong(claims.getSubject());
-    }
-
-    public String getTypeFromToken(String token) {
-        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
-        Claims claims = Jwts.parser()
-                .setSigningKey(encodedJwt)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get("type").toString();
-    }
-
     public void validateToken(String authToken) {
         String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
         Jwts.parser().setSigningKey(encodedJwt).parseClaimsJws(authToken);
@@ -150,5 +134,62 @@ public class TokenProvider {
             throw new CustomJwtException("유저(" + userId + ") 저장된 리프레시 토큰과 일치하지 않습니다.", "403");
         }
         return userId;
+    }
+
+    public Token createAdminAccessToken(Authentication authentication) {
+        Date now = new Date();
+        Date accessExpiryDate = new Date(now.getTime() + appProperties.getAuth().getAccessTokenExpirationMsec());
+        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
+
+        String accessTokenString = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("type", "access")
+                .claim("role", authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
+                .setIssuedAt(new Date())
+                .setExpiration(accessExpiryDate)
+                .signWith(SignatureAlgorithm.HS512, encodedJwt)
+                .compact() ;
+
+        return  new Token(accessTokenString, accessExpiryDate);
+    }
+
+    public Long getUserIdFromToken(String token) {
+        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
+        Claims claims = Jwts.parser()
+                .setSigningKey(encodedJwt)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return Long.parseLong(claims.getSubject());
+    }
+
+    public String getTypeFromToken(String token) {
+        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
+        Claims claims = Jwts.parser()
+                .setSigningKey(encodedJwt)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("type").toString();
+    }
+
+    public String getRoleFromToken(String token) {
+        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
+        Claims claims = Jwts.parser()
+                .setSigningKey(encodedJwt)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("role").toString();
+    }
+
+    public String getUsernameFromToken(String token) {
+        String encodedJwt = Base64Utils.encodeToString(appProperties.getAuth().getTokenSecret().getBytes());
+        Claims claims = Jwts.parser()
+                .setSigningKey(encodedJwt)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
     }
 }
