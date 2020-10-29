@@ -76,4 +76,11 @@ public class Restaurant {
     private LocalDateTime modifiedDate;
 
     private String thumUrl;
+
+    @Column(columnDefinition = "int(10) default 0")
+    private int likeCount;
+
+    public void upLikeCount() {
+        this.likeCount += 1;
+    }
 }

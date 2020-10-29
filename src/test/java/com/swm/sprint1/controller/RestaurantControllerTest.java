@@ -405,11 +405,11 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         MvcResult result = mockMvc.perform(get(url)
-                .param("id", user1.getId()+"," + user2.getId() + "," + user3.getId())
+                .param("userId", user1.getId()+"," + user2.getId() + "," + user3.getId())
                 .param("longitude", longitude)
                 .param("latitude", latitude)
                 .param("radius", radius)
@@ -422,13 +422,12 @@ public class RestaurantControllerTest {
         ApiResponse apiResponse = objectMapper.readValue(contentAsString, ApiResponse.class);
         List<RestaurantResponseDto> restaurants = (List<RestaurantResponseDto>) apiResponse.getData().get("restaurants");
         assertThat(restaurants.size()).isEqualTo(7);
-        assertThat(restaurants).extracting("categories").doesNotContain("치킨","고기","곱|대창","분식","주점", "양식", "패스트푸드", "세계음식", "찜|탕");
     }
 
     @Test
     public void 식당카드7조회_아이디_없이_요청_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         ResultActions result = mockMvc.perform(get(url)
@@ -448,7 +447,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_반경_없이_요청_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         ResultActions result = mockMvc.perform(get(url)
@@ -467,7 +466,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_반경_범위_미만_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
         String radius = BigDecimal.valueOf(0.0001).toString();
 
         //when
@@ -488,7 +487,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_반경_범위_초과_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
         String radius = BigDecimal.valueOf(0.03).toString();
 
         //when
@@ -509,7 +508,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_위도_없이_요청_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         ResultActions result = mockMvc.perform(get(url)
@@ -528,7 +527,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_위도_범위_초과_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
         String latitude = BigDecimal.valueOf(200).toString();
 
         //when
@@ -549,7 +548,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_위도_범위_미만_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
         String latitude = BigDecimal.valueOf(0).toString();
 
         //when
@@ -570,7 +569,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_경도_없이_요청_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         ResultActions result = mockMvc.perform(get(url)
@@ -589,7 +588,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_경도_범위_초과_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
         String longitude = BigDecimal.valueOf(200).toString();
 
         //when
@@ -610,7 +609,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_경도_범위_미만_102() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
         String longitude = BigDecimal.valueOf(0).toString();
 
         //when
@@ -631,11 +630,11 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_7장미만_211() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         ResultActions result = mockMvc.perform(get(url)
-                .param("id", user4.getId().toString())
+                .param("userId", user4.getId().toString())
                 .param("longitude", longitude)
                 .param("latitude", latitude)
                 .param("radius", radius)
@@ -651,7 +650,7 @@ public class RestaurantControllerTest {
     @Test
     public void 식당카드7조회_헤더_Bearer_빼고_요청() throws Exception {
         //given
-        String url = "/api/v1/restaurants7";
+        String url = "/api/v1/restaurants";
 
         //when
         ResultActions result = mockMvc.perform(get(url)

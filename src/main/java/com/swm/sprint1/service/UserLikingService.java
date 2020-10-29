@@ -40,6 +40,9 @@ public class UserLikingService {
         if(restaurants.size() != 7){
             throw new ResourceNotFoundException("restaurant", "id", "식당  존재하지 않는 식당 아이디가 포함되어 있습니다.","210");
         }
+
+        restaurants.stream().forEach(restaurant -> restaurant.upLikeCount());
+
         List<UserLiking> userLikings = new ArrayList<>();
 
         for (int i = 0; i < 7; i++) {
