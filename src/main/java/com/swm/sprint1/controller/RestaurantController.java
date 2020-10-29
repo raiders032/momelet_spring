@@ -23,6 +23,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,15 +57,19 @@ public class RestaurantController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "유저들의 카테고리 기반 식당 카드 7장 조회" , notes = "유저들 카테고리를 기반으로 하여 7개의 주변 식당 목록을 반환합니다.")
-    @GetMapping("/api/v1/restaurants7")
-    public ResponseEntity<?> getRestaurant7SimpleCategoryBased(@RequestParam @NotBlank String id,
+    @ApiOperation(value = "유저들의 카테고리 기반 식당 카드 조회" , notes = "유저들 카테고리를 기반으로 주변 식당 목록을 반환합니다.")
+    @GetMapping("/api/v1/restaurants")
+    public ResponseEntity<?> getRestaurant7SimpleCategoryBased(@RequestParam @NotBlank String userId,
+                                                               @RequestParam(defaultValue = "") String restaurantId,
                                                                @RequestParam @NotNull @DecimalMin("123") @DecimalMax("133")BigDecimal longitude,
                                                                @RequestParam @DecimalMin("32") @DecimalMax("43")BigDecimal latitude,
                                                                @RequestParam @DecimalMin("0.001") @DecimalMax("0.02") BigDecimal radius){
         logger.debug("getRestaurant7SimpleCategoryBased 호출되었습니다.");
-        List<Long> ids = Arrays.stream(id.split(",")).map(Long::parseLong).collect(Collectors.toList());
-        List<RestaurantResponseDto> restaurants = restaurantService.findRestaurant7SimpleCategoryBased(ids,longitude,latitude,radius);
+        List<Long> userIds = Arrays.stream(userId.split(",")).map(Long::parseLong).collect(Collectors.toList());
+        List<Long> restaurantIds = new ArrayList<>();
+        if(!restaurantId.isEmpty())
+             restaurantIds.addAll(Arrays.stream(restaurantId.split(",")).map(Long::parseLong).collect(Collectors.toList()));
+        List<RestaurantResponseDto> restaurants = restaurantService.findGameCards(userIds, restaurantIds, longitude, latitude, radius);
         ApiResponse response = new ApiResponse(true);
         response.putData("restaurants", restaurants);
 
@@ -72,9 +77,9 @@ public class RestaurantController {
     }
 
     @ApiOperation(value="식당 검색", notes = "식당을 검색합니다.")
-    @GetMapping("/api/v1/restaurants")
+    @GetMapping("/api/v1/restaurants/search")
     public ResponseEntity<?> getRestaurant(Pageable pageable, RestaurantSearchCondition condition){
-        Page<RestaurantResponseDto> restaurants = restaurantService.getRestaurants(pageable, condition);
+        Page<RestaurantResponseDto> restaurants = restaurantService.searchRestaurants(pageable, condition);
 
         ApiResponse response = new ApiResponse(true);
         response.putData("restaurants", restaurants);

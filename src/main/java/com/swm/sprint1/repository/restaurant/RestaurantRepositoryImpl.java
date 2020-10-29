@@ -38,85 +38,38 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
     private final JpaResultMapper jpaResultMapper;
 
     @Override
-    public List<RetrieveRestaurantResponseV1> findRetrieveRestaurantByLatitudeAndLongitudeAndUserCategory(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, List<Category> categoryList) {
-       return queryFactory.select(Projections.fields(RetrieveRestaurantResponseV1.class,
-                restaurant.id, restaurant.name, restaurant.thumUrl ,restaurant.address, restaurant.roadAddress
-                , restaurant.googleId, restaurant.naverId, restaurant.googleRating, restaurant.openingHours
-                , restaurant.priceLevel, restaurant.longitude, restaurant.latitude
-                , ExpressionUtils.as( Expressions.stringTemplate("function('group_concat', {0})", category.name),"categories")))
-                .from(restaurantCategory)
-                .join(restaurantCategory.category, category)
-                .join(restaurantCategory.restaurant, restaurant)
-                .where(latitudeBetween(latitude, radius), longitudeBetween(longitude, radius), restaurantInUserCategory(categoryList))
-                .groupBy(restaurant.id)
-                .fetch();
-    }
-
-    @Override
-    public List<RestaurantResponseDto> findRestaurantDtoResponseByLatitudeAndLongitudeAndUserCategory(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Long id) {
-        String sql =
-                "   SELECT  " +
-                "       r.restaurant_id, r.name, r.thum_url, " +
-                "       group_concat(DISTINCT concat(m.name,'∬', m.price)  order by m.menu_id SEPARATOR '`') as menu, " +
-                "       group_concat(DISTINCT c.name order by c.category_id) as categories, " +
-                "       r.google_rating, r.google_review_count, r.opening_hours, r.price_level, r.address, r.road_address, " +
-                "       r.longitude, r.latitude, r.naver_id, r.google_id, r.phone_number " +
-                "   FROM( " +
-                "       SELECT restaurant.* " +
-                "       FROM restaurant  " +
-                "       WHERE (restaurant.latitude between ? and ?) and (restaurant.longitude between ? and ?)) r " +
-                "   JOIN restaurant_category rc on r.restaurant_id = rc.restaurant_id " +
-                "   JOIN category c on rc.category_id = c.category_id " +
-                "   LEFT JOIN menu m on r.restaurant_id = m.restaurant_id " +
-                "   WHERE r.restaurant_id in ( " +
-                "       SELECT rc.restaurant_id " +
-                "       FROM restaurant_category rc " +
-                "       WHERE rc.category_id in ( " +
-                "           SELECT user_category.category_id " +
-                "           FROM user_category " +
-                "           WHERE user_category.user_id = ? ) " +
-                "       GROUP by rc.restaurant_id) " +
-                "   GROUP by r.restaurant_id " +
-                "   ORDER by rand() " +
-                "   LIMIT 100 ";
-
-        Query query = em.createNativeQuery(sql)
-                .setParameter(1, latitude.subtract(radius))
-                .setParameter(2, latitude.add(radius))
-                .setParameter(3, longitude.subtract(radius))
-                .setParameter(4, longitude.add(radius))
-                .setParameter(5, id);
-
-        List<RestaurantResponseDto> list = jpaResultMapper.list(query, RestaurantResponseDto.class);
-        return list;
-    }
-
-    @Override
-    public List<Restaurant> findByLatitudeAndLongitudeAndCategories(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, List<Category> categoryList) {
-        return queryFactory.select(restaurant)
-                .from(restaurantCategory)
-                .join(restaurantCategory.category, category)
-                .join(restaurantCategory.restaurant, restaurant)
-                .where(latitudeBetween(latitude, radius), longitudeBetween(longitude, radius), restaurantInUserCategory(categoryList))
-                .groupBy(restaurant.id)
-                .orderBy(restaurant.googleRating.desc())
-                .limit(100)
-                .fetch();
-    }
-
-    @Override
-    public List<Restaurant> findByLatitudeAndLongitudeAndCategory(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Long category_id, Long limit) {
-        return queryFactory.select(restaurant)
+    public List<Restaurant> findAllByIdOrderByIdAsc(List<Long> restaurantId) {
+        return queryFactory
+                .select(restaurant)
                 .from(restaurant)
-                .join(restaurant.restaurantCategories, restaurantCategory).fetchJoin()
-                .join(restaurantCategory.category, category)
-                .where(restaurantCategory.category.id.eq(category_id)
-                        , longitudeBetween(longitude,radius)
-                        , latitudeBetween(latitude,radius)
-                        ,  restaurant.id.lt(30))
-                .limit(limit)
-                .orderBy(restaurant.googleRating.desc())
+                .where(restaurant.id.in(restaurantId))
+                .orderBy(restaurant.id.asc())
                 .fetch();
+    }
+
+    @Override
+    public Page<RestaurantResponseDto> searchRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
+        List<RestaurantResponseDto> content = queryFactory
+                .select(Projections.constructor(RestaurantResponseDto.class,
+                        restaurant.id, restaurant.name, restaurant.thumUrl,
+                        restaurant.address, restaurant.roadAddress,
+                        restaurant.longitude, restaurant.latitude, restaurant.phoneNumber))
+                .from(restaurant)
+                .where(nameLike(condition.getName()),
+                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
+                        longitudeBetween(condition.getLongitude(), condition.getRadius()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Restaurant> countQuery = queryFactory
+                .select(restaurant)
+                .from(restaurant)
+                .where(nameLike(condition.getName()),
+                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
+                        longitudeBetween(condition.getLongitude(), condition.getRadius()));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
     @Override
@@ -179,68 +132,6 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
     }
 
     @Override
-    public List<Restaurant> findAllByIdOrderByIdAsc(List<Long> restaurantId) {
-        return queryFactory
-                .select(restaurant)
-                .from(restaurant)
-                .where(restaurant.id.in(restaurantId))
-                .orderBy(restaurant.id.asc())
-                .fetch();
-    }
-
-    @Override
-    public Page<RestaurantResponseDto> findDto(Pageable pageable, RestaurantSearchCondition condition) {
-        List<RestaurantResponseDto> content = queryFactory
-                .select(Projections.constructor(RestaurantResponseDto.class,
-                        restaurant.id, restaurant.name, restaurant.thumUrl,
-                        restaurant.address, restaurant.roadAddress,
-                        restaurant.longitude, restaurant.latitude, restaurant.phoneNumber))
-                .from(restaurant)
-                .where(nameLike(condition.getName()),
-                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
-                        longitudeBetween(condition.getLongitude(), condition.getRadius()))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Restaurant> countQuery = queryFactory
-                .select(restaurant)
-                .from(restaurant)
-                .where(nameLike(condition.getName()),
-                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
-                        longitudeBetween(condition.getLongitude(), condition.getRadius()));
-
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-    }
-
-    @Override
-    public List<RestaurantResponseDto> findDtosByUserCategoryv1(Long userId, RestaurantSearchCondition condition) {
-        QCategory c = new QCategory("c");
-        return queryFactory
-                .select(Projections.constructor(RestaurantResponseDto.class,
-                        restaurant.id, restaurant.name, restaurant.thumUrl,
-                        restaurant.address, restaurant.roadAddress,
-                        restaurant.longitude, restaurant.latitude,
-                        restaurant.phoneNumber, userLiking.id.count().as("like")
-                ))
-                .from(restaurant)
-                .join(restaurant.restaurantCategories, restaurantCategory)
-                .leftJoin(restaurant.userLikings, userLiking)
-                .where(nameLike(condition.getName()),
-                        latitudeBetween(condition.getLatitude(), condition.getRadius()),
-                        longitudeBetween(condition.getLongitude(), condition.getRadius()),
-                        restaurantCategory.category.id.in(JPAExpressions
-                                .select(c.id)
-                                .from(userCategory)
-                                .join(userCategory.category, c)
-                                .where(userCategory.user.id.eq(userId))))
-                .groupBy(userLiking.restaurant.id, restaurantCategory.category.id)
-                .orderBy(userLiking.id.count().desc())
-                .limit(100)
-                .fetch();
-    }
-
-    @Override
     public List<RestaurantResponseDto> findDtosByUserCategory(Long userId, BigDecimal longitude, BigDecimal latitude, BigDecimal radius) {
         QCategory c = new QCategory("c");
         List<Tuple> tuples = queryFactory
@@ -266,6 +157,93 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
         return restaurantResponseDtos;
     }
 
+    @Override
+    public List<RestaurantResponseDto> findDtos(List<Long> userIds, BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Integer limit) {
+        String sql =
+                "  SELECT  " +
+                "      r5.restaurant_id, r5.name, r5.thum_url, r5.menu,    " +
+                "      r5.opening_hours,r5.address, r5.road_address,   " +
+                "      r5.longitude, r5.latitude, r5.phone_number,    " +
+                "      count(ul.user_liking_id) as likecount " +
+                "  FROM( " +
+                "      SELECT r4.*, group_concat(DISTINCT concat(m.name, '∬', m.price)  order by m.menu_id SEPARATOR '`') as menu    " +
+                "      FROM  " +
+                "      (   " +
+                "          SELECT r3.*   " +
+                "          FROM(    " +
+                "              SELECT  r2.*,   " +
+                "                      (CASE @vcar WHEN r2.category_id THEN @rownum \\:=@rownum+1 ELSE @rownum \\:=1 END) rnum, " +
+                "                      (@vcar \\:=r2.category_id) vcar   " +
+                "              FROM(   " +
+                "                      (   " +
+                "                      SELECT r1.*, rc.category_id " +
+                "                      FROM(   " +
+                "                          SELECT restaurant.*     " +
+                "                          FROM restaurant " +
+                "                          WHERE restaurant.latitude BETWEEN :lat1 AND :lat2   " +
+                "                          AND restaurant.longitude BETWEEN :lon1 AND :lon2    " +
+                "                          ) r1    " +
+                "                      JOIN restaurant_category rc ON r1.restaurant_id = rc.restaurant_id  " +
+                "                      WHERE rc.category_id in(    " +
+                "                          SELECT distinct uc.category_id     " +
+                "                          FROM user_category uc                     " +
+                "                          WHERE uc.user_id in ( :ids )) " +
+                "                      ORDER BY rc.category_id asc, RAND() " +
+                "                      ) r2    " +
+                "                      ,   " +
+                "                      (   " +
+                "                          SELECT @vcar \\:=0, @rownum \\:=0   " +
+                "                          FROM DUAL   " +
+                "                      ) b " +
+                "                  )   " +
+                "              ) r3    " +
+                "          WHERE r3.rnum <=(   " +
+                "          select  " +
+                "          count(uc.user_category_id)             " +
+                "          from    " +
+                "          user_category uc             " +
+                "          where   " +
+                "          uc.category_id = r3.category_id            " +
+                "          and uc.user_id in (:ids)             " +
+                "          group by    " +
+                "          uc.category_id  " +
+                "          )* 7     " +
+                "          ORDER BY r3.category_id     " +
+                "          ) r4    " +
+                "              LEFT JOIN menu m on r4.restaurant_id = m.restaurant_id  " +
+                "              GROUP BY r4.restaurant_id   " +
+                "      ) r5    " +
+                "      LEFT JOIN user_liking ul on r5.restaurant_id = ul.restaurant_id " +
+                "      GROUP BY r5.restaurant_id   " +
+                "      ORDER By rand() " +
+                "      LIMIT :limit ";
+
+        Query query = em.createNativeQuery(sql)
+                .setParameter("lat1", latitude.subtract(radius))
+                .setParameter("lat2", latitude.add(radius))
+                .setParameter("lon1", longitude.subtract(radius))
+                .setParameter("lon2", longitude.add(radius))
+                .setParameter("ids", userIds)
+                .setParameter("limit", limit);
+
+        return jpaResultMapper.list(query, RestaurantResponseDto.class);
+    }
+
+    @Override
+    public List<RestaurantResponseDto> findDtosById(List<Long> restaurantIds) {
+        List<Tuple> tuples = queryFactory
+                .select(restaurant, userLiking.id.count().as("like"))
+                .from(restaurant)
+                .leftJoin(restaurant.userLikings, userLiking)
+                .where(restaurant.id.in(restaurantIds))
+                .groupBy(restaurant.id)
+                .fetch();
+
+        return tuples.stream()
+                .map(tuple -> new RestaurantResponseDto(tuple.get(0, Restaurant.class), tuple.get(1, Long.class)))
+                .collect(Collectors.toList());
+    }
+
     private BooleanExpression nameLike(String name) {
         return name != null ? restaurant.name.like("%"+name+"%") : null;
     }
@@ -278,7 +256,4 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
         return longitude != null ? restaurant.longitude.between(longitude.subtract(radius), longitude.add(radius)) : null;
     }
 
-    private BooleanExpression restaurantInUserCategory(List<Category> categoryList){
-        return !categoryList.isEmpty() ? restaurantCategory.category.in(categoryList) : null;
-    }
 }

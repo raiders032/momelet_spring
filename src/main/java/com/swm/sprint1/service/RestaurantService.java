@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -26,26 +26,29 @@ public class RestaurantService {
         return restaurantRepository.findDtosByUserCategory(userId, longitude, latitude, radius);
     }
 
-    public List<RestaurantResponseDto> findRestaurantDtoResponse(BigDecimal latitude, BigDecimal longitude, BigDecimal radius, Long id) {
-        logger.debug("findRestaurantDtoResponse 호출됨");
-        return restaurantRepository.findRestaurantDtoResponseByLatitudeAndLongitudeAndUserCategory(latitude,longitude,radius,id);
+    public Page<RestaurantResponseDto> searchRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
+        return restaurantRepository.searchRestaurants(pageable, condition);
     }
 
-    public List<RestaurantResponseDto> findRestaurant7SimpleCategoryBased(List<Long> ids, BigDecimal longitude, BigDecimal latitude, BigDecimal radius) {
-        logger.debug("findRestaurant7SimpleCategoryBased 호출");
-        List<RestaurantResponseDto> restaurants = restaurantRepository.findRestaurant7(latitude, longitude, radius, ids);
-        if(restaurants.size() < 7){
-            logger.info("선택된 식당 카드가 7장 미만 반경을 넓혀 다시 조회합니다.");
-            restaurants = restaurantRepository.findRestaurant7(latitude, longitude, BigDecimal.valueOf(0.02), ids);
-            if(restaurants.size() < 7){
-                logger.error("선택된 식당 카드가 7장 미만입니다.");
-                throw new RestaurantLessThan7Exception("선택된 식당 카드가 7장 미만입니다.");
+    public List<RestaurantResponseDto> findGameCards(List<Long> userIds, List<Long> restaurantIds, BigDecimal longitude, BigDecimal latitude, BigDecimal radius) {
+        logger.debug("findDtos 호출");
+
+        Set<Long> restaurantIdsSet = new HashSet<>(restaurantIds);
+        List<RestaurantResponseDto> restaurants = new ArrayList<>(restaurantRepository.findDtosById(new ArrayList<>(restaurantIdsSet)));
+
+        if(restaurantIdsSet.size() < 7){
+            List<RestaurantResponseDto> dtos = restaurantRepository.findDtos(userIds, latitude, longitude, radius, 50);
+            Iterator<RestaurantResponseDto> iterator = dtos.iterator();
+
+            while(restaurants.size() < 7 && iterator.hasNext()){
+                RestaurantResponseDto dto = iterator.next();
+                if(restaurants.contains(dto))
+                    continue;
+                restaurants.add(dto);
             }
         }
+        if(restaurants.size() < 7 )
+            throw new RestaurantLessThan7Exception("식당 카드가 7장 미만입니다.");
         return restaurants;
-    }
-
-    public Page<RestaurantResponseDto> getRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
-        return restaurantRepository.findDto(pageable, condition);
     }
 }
