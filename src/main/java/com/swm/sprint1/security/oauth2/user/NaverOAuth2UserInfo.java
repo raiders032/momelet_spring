@@ -20,7 +20,10 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getEmail() {
-        return (String) attributes.get("email");
+        if(attributes.containsKey("email"))
+            return (String) attributes.get("email");
+        else
+            return null;
     }
 
     @Override
