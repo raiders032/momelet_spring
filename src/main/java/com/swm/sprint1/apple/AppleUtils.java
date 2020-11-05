@@ -9,6 +9,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class AppleUtils {
 
@@ -125,7 +127,7 @@ public class AppleUtils {
      * @return client_secret(jwt)
      */
     public String createClientSecret() {
-
+        log.debug("createClientSecret 호출");
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256).keyID(KEY_ID).build();
         Date now = new Date();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
@@ -138,10 +140,12 @@ public class AppleUtils {
         SignedJWT jwt = new SignedJWT(header, claimsSet);
 
         try {
+            log.debug("ecPrivateKey 생성 전");
             ECPrivateKey ecPrivateKey = new ECPrivateKeyImpl(readPrivateKey());
-            JWSSigner jwsSigner = new ECDSASigner( ecPrivateKey);
+            JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey);
 
             jwt.sign(jwsSigner);
+            log.debug("sing 완료");
 
         } catch (InvalidKeyException e) {
             e.printStackTrace();
@@ -171,7 +175,7 @@ public class AppleUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        log.debug("readPrivateKey 완료");
         return content;
     }
 
