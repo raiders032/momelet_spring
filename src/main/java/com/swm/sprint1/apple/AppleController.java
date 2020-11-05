@@ -1,5 +1,6 @@
 package com.swm.sprint1.apple;
 
+import com.nimbusds.jose.JOSEException;
 import com.swm.sprint1.config.AppProperties;
 import com.swm.sprint1.domain.AuthProvider;
 import com.swm.sprint1.domain.Category;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,7 +85,7 @@ public class AppleController {
      */
     @PostMapping(value = "/redirect")
     @ResponseBody
-    public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse) {
+    public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse) throws JOSEException, InvalidKeyException, IOException {
         logger.debug("servicesRedirect 호출");
         if (serviceResponse == null) {
             return null;

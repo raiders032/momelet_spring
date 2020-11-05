@@ -126,7 +126,7 @@ public class AppleUtils {
      *
      * @return client_secret(jwt)
      */
-    public String createClientSecret() {
+    public String createClientSecret() throws IOException, InvalidKeyException, JOSEException {
         log.debug("createClientSecret 호출");
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256).keyID(KEY_ID).build();
         Date now = new Date();
@@ -139,19 +139,14 @@ public class AppleUtils {
                         .build();
         SignedJWT jwt = new SignedJWT(header, claimsSet);
 
-        try {
-            log.debug("ecPrivateKey 생성 전");
-            ECPrivateKey ecPrivateKey = new ECPrivateKeyImpl(readPrivateKey());
-            JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey);
 
-            jwt.sign(jwsSigner);
-            log.debug("sing 완료");
+        log.debug("ecPrivateKey 생성 전");
+        ECPrivateKey ecPrivateKey = new ECPrivateKeyImpl(readPrivateKey());
+        JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey);
+        jwt.sign(jwsSigner);
+        log.debug("sing 완료");
 
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (JOSEException e) {
-            e.printStackTrace();
-        }
+
 
         return jwt.serialize();
     }
@@ -161,23 +156,16 @@ public class AppleUtils {
      *
      * @return Private Key
      */
-    private byte[] readPrivateKey() {
+    private byte[] readPrivateKey() throws IOException {
         log.debug("readPrivateKey() 호출");
         log.debug("KEY_PATH : " + KEY_PATH);
         Resource resource = new ClassPathResource(KEY_PATH);
         byte[] content = null;
 
-        try (FileReader keyReader = new FileReader(resource.getURI().getPath());
-             PemReader pemReader = new PemReader(keyReader)) {
-            {
-                PemObject pemObject = pemReader.readPemObject();
-                content = pemObject.getContent();
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            log.error(String.valueOf(e.getCause()));
-            e.printStackTrace();
-        }
+        FileReader keyReader = new FileReader(resource.getURI().getPath());
+        PemReader pemReader = new PemReader(keyReader);
+        PemObject pemObject = pemReader.readPemObject();
+        content = pemObject.getContent();
         log.debug("readPrivateKey 완료");
         return content;
     }

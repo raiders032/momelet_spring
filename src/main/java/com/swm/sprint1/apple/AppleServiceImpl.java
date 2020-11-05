@@ -1,9 +1,12 @@
 package com.swm.sprint1.apple;
 
+import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.util.Map;
 
 @Slf4j
@@ -21,7 +24,7 @@ public class AppleServiceImpl implements AppleService {
      * @return
      */
     @Override
-    public String getAppleClientSecret(String id_token) {
+    public String getAppleClientSecret(String id_token) throws JOSEException, InvalidKeyException, IOException {
 
         if (appleUtils.verifyIdentityToken(id_token)) {
             log.debug("id_token 검즘 완료");
