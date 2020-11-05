@@ -27,14 +27,16 @@ public class BookmarkService {
     public void createBookmark(Long userId, Long restaurantId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId, "200"));
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId, "210"));
+        if(bookmarkRepository.existsByUserIdAndRestaurantId(userId, restaurantId))
+            return;
         Bookmark bookmark = new Bookmark(user, restaurant);
         bookmarkRepository.save(bookmark);
     }
 
     @Transactional
-    public void deleteBookmark(Long userId, Long bookmarkId) {
-        Bookmark bookmark = bookmarkRepository.findByIdAndUserId(bookmarkId, userId).orElseThrow(
-                () -> new ResourceNotFoundException("Bookmark", "id", bookmarkId, "260")
+    public void deleteBookmark(Long userId, Long restaurantId) {
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndRestaurantId(userId, restaurantId).orElseThrow(
+                () -> new ResourceNotFoundException("Bookmark", "userId,restaurantId", restaurantId, "260")
         );
         bookmarkRepository.delete(bookmark);
     }

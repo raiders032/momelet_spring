@@ -40,10 +40,10 @@ public class BookmarkController {
     }
 
     @ApiOperation(value = "북마크 삭제", notes = "북마크를 삭제합니다.")
-    @DeleteMapping("/api/v1/bookmarks/{bookmarkId}")
+    @DeleteMapping("/api/v1/bookmarks/restaurants/{restaurantId}")
     public ResponseEntity<?> deleteBookmark(@CurrentUser UserPrincipal userPrincipal,
-                                            @PathVariable Long bookmarkId){
-        bookmarkService.deleteBookmark(userPrincipal.getId(), bookmarkId);
+                                            @PathVariable Long restaurantId){
+        bookmarkService.deleteBookmark(userPrincipal.getId(), restaurantId);
         ApiResponse response = new ApiResponse(true, "북마크 삭제 완료");
         return ResponseEntity.ok(response);
     }

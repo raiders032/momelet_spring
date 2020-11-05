@@ -25,7 +25,11 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom{
     public Page<BookmarkResponseDto> findDtosByUserId(Long userId, Pageable pageable) {
         List<BookmarkResponseDto> contents = queryFactory
                 .select(Projections.fields(BookmarkResponseDto.class,
-                        bookmark.id, restaurant.id.as("restaurantId"), restaurant.name, restaurant.thumUrl, userLiking.id.count().as("like")))
+                        bookmark.id, restaurant.id.as("restaurantId"), restaurant.name,
+                        restaurant.thumUrl, userLiking.id.count().as("like"),
+                        restaurant.latitude, restaurant.longitude
+
+                ))
                 .from(bookmark)
                 .join(bookmark.restaurant, restaurant)
                 .join(restaurant.userLikings, userLiking)
