@@ -50,6 +50,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //implementation 'com.nimbusds:nimbus-jose-jwt:3.10'
+    implementation 'org.apache.httpcomponents:httpclient'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.52'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

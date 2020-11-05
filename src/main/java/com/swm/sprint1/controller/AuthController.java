@@ -1,5 +1,8 @@
 package com.swm.sprint1.controller;
 
+import com.swm.sprint1.apple.AppleService;
+import com.swm.sprint1.apple.ServicesResponse;
+import com.swm.sprint1.apple.TokenResponse;
 import com.swm.sprint1.exception.RequestParamException;
 import com.swm.sprint1.payload.request.JwtDto;
 import com.swm.sprint1.payload.request.LoginRequest;
@@ -10,6 +13,7 @@ import com.swm.sprint1.security.Token;
 import com.swm.sprint1.security.TokenProvider;
 import com.swm.sprint1.service.AuthService;
 import io.swagger.annotations.ApiOperation;
+import javassist.tools.rmi.AppletServer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +22,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,6 +44,8 @@ public class AuthController {
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final AdminRepository adminRepository;
+
+    private final AppleService appleService;
 
     @ApiOperation(value = "액세스 토큰 재발급", notes = "새로 갱신된 액세스 토큰을 발급합니다.")
     @PostMapping("/api/v1/auth/access-token")
