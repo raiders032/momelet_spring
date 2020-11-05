@@ -1,10 +1,12 @@
 package com.swm.sprint1.apple;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AppleServiceImpl implements AppleService {
@@ -22,6 +24,7 @@ public class AppleServiceImpl implements AppleService {
     public String getAppleClientSecret(String id_token) {
 
         if (appleUtils.verifyIdentityToken(id_token)) {
+            log.debug("id_token 검즘 완료");
             return appleUtils.createClientSecret();
         }
 

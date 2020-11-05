@@ -83,29 +83,33 @@ public class AppleController {
     @PostMapping(value = "/redirect")
     @ResponseBody
     public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse) {
-
+        logger.debug("servicesRedirect 호출");
         if (serviceResponse == null) {
             return null;
         }
 
         String code = serviceResponse.getCode();
         String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
+        logger.debug("client_secret 생성 완료");
 
         TokenResponse tokenResponse = appleService.requestCodeValidations(client_secret, code, null);
+        logger.debug("code 검증 완료");
+
         Payload payload = appleUtils.decodeFromIdToken(tokenResponse.getId_token());
-
         Optional<User> userOptional = userRepository.findByProviderAndProviderId(AuthProvider.apple, payload.getSub());
-
         User user;
         if(userOptional.isPresent()) {
+            logger.debug("이미 존재하는 회원입니다.");
             user = userOptional.get();
         } else {
+            logger.debug("신규 회원입니다.");
             user = registerNewUser(AuthProvider.apple, payload.getSub(), "이름을 변경 해주세요", payload.getEmail());
         }
 
         AuthResponse accessAndRefreshToken = authService.createAccessAndRefreshToken(user.getId());
         Token accessToken = accessAndRefreshToken.getAccessToken();
         Token refreshToken = accessAndRefreshToken.getRefreshToken();
+        logger.debug("jwt 토큰 생성완료");
 
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
 
