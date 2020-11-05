@@ -160,11 +160,15 @@ public class AppleUtils {
         log.debug("readPrivateKey() 호출");
         log.debug("KEY_PATH : " + KEY_PATH);
         Resource resource = new ClassPathResource(KEY_PATH);
+        log.debug("resource 생성");
         byte[] content = null;
 
         FileReader keyReader = new FileReader(resource.getURI().getPath());
+        log.debug("keyReader 생성");
         PemReader pemReader = new PemReader(keyReader);
+        log.debug("pemReader 생성");
         PemObject pemObject = pemReader.readPemObject();
+        log.debug("readPemObject() 호출");
         content = pemObject.getContent();
         log.debug("readPrivateKey 완료");
         return content;
