@@ -162,7 +162,8 @@ public class AppleUtils {
      * @return Private Key
      */
     private byte[] readPrivateKey() {
-
+        log.debug("readPrivateKey() 호출");
+        log.debug("KEY_PATH : " + KEY_PATH);
         Resource resource = new ClassPathResource(KEY_PATH);
         byte[] content = null;
 
@@ -173,6 +174,8 @@ public class AppleUtils {
                 content = pemObject.getContent();
             }
         } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(String.valueOf(e.getCause()));
             e.printStackTrace();
         }
         log.debug("readPrivateKey 완료");
