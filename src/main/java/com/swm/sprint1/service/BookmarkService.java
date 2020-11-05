@@ -34,9 +34,9 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void deleteBookmark(Long userId, Long bookmarkId) {
-        Bookmark bookmark = bookmarkRepository.findByIdAndUserId(bookmarkId, userId).orElseThrow(
-                () -> new ResourceNotFoundException("Bookmark", "id", bookmarkId, "260")
+    public void deleteBookmark(Long userId, Long restaurantId) {
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndRestaurantId(userId, restaurantId).orElseThrow(
+                () -> new ResourceNotFoundException("Bookmark", "userId,restaurantId", restaurantId, "260")
         );
         bookmarkRepository.delete(bookmark);
     }
