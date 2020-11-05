@@ -165,6 +165,7 @@ public class AppleUtils {
 
         log.debug("resource");
         log.debug(resource.toString());
+        log.debug("URI : " + resource.getURI());
         log.debug("path : " + resource.getURI().getPath());
         FileReader keyReader = new FileReader(resource.getURI().getPath());
         log.debug("keyReader 생성");
