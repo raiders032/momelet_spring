@@ -13,13 +13,13 @@ import com.swm.sprint1.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +85,7 @@ public class AppleController {
      */
     @PostMapping(value = "/redirect")
     @ResponseBody
-    public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse) throws JOSEException, InvalidKeyException, IOException {
+    public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse) throws JOSEException, InvalidKeyException, IOException, URISyntaxException {
         logger.debug("servicesRedirect 호출");
         if (serviceResponse == null) {
             return null;

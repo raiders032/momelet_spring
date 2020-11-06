@@ -9,18 +9,27 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 import sun.security.ec.ECPrivateKeyImpl;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -29,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class AppleUtils {
@@ -157,19 +167,11 @@ public class AppleUtils {
      * @return Private Key
      */
     private byte[] readPrivateKey() throws IOException {
-        log.debug("readPrivateKey() 호출");
-        log.debug("KEY_PATH : " + KEY_PATH);
-        Resource resource = new ClassPathResource(KEY_PATH);
-        log.debug("resource 생성");
+        InputStream inputStream = new ClassPathResource(KEY_PATH).getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         byte[] content = null;
-
-        log.debug("resource");
-        log.debug(resource.toString());
-        log.debug("URI : " + resource.getURI());
-        log.debug("path : " + resource.getURI().getPath());
-        FileReader keyReader = new FileReader(resource.getURI().getPath());
-        log.debug("keyReader 생성");
-        PemReader pemReader = new PemReader(keyReader);
+        PemReader pemReader = new PemReader(bufferedReader);
         log.debug("pemReader 생성");
         PemObject pemObject = pemReader.readPemObject();
         log.debug("readPemObject() 호출");
