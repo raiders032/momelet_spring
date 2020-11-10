@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
@@ -78,9 +79,8 @@ public class RestaurantController {
 
     @ApiOperation(value="식당 검색", notes = "식당을 검색합니다.")
     @GetMapping("/api/v1/restaurants/search")
-    public ResponseEntity<?> getRestaurant(Pageable pageable, RestaurantSearchCondition condition){
+    public ResponseEntity<?> getRestaurant(Pageable pageable, @Valid @ModelAttribute RestaurantSearchCondition condition){
         Page<RestaurantResponseDto> restaurants = restaurantService.searchRestaurants(pageable, condition);
-
         ApiResponse response = new ApiResponse(true);
         response.putData("restaurants", restaurants);
         return ResponseEntity.ok(response);
