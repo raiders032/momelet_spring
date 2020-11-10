@@ -32,18 +32,18 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom{
                 ))
                 .from(bookmark)
                 .join(bookmark.restaurant, restaurant)
-                .join(restaurant.userLikings, userLiking)
+                .leftJoin(restaurant.userLikings, userLiking)
                 .where(bookmark.user.id.eq(userId))
-                .groupBy(userLiking.restaurant.id)
+                .groupBy(restaurant.id)
                 .fetch();
 
         JPAQuery<Bookmark> countQuery = queryFactory
                 .select(bookmark)
                 .from(bookmark)
                 .join(bookmark.restaurant, restaurant)
-                .join(restaurant.userLikings, userLiking)
+                .leftJoin(restaurant.userLikings, userLiking)
                 .where(bookmark.user.id.eq(userId))
-                .groupBy(userLiking.restaurant.id);
+                .groupBy(restaurant.id);
 
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
