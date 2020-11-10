@@ -31,6 +31,7 @@ public class RestaurantResponseDto {
     private BigDecimal latitude;
     private String phoneNumber;
     private Long like;
+    private Double distance;
 
     //식당 조회 sql
     public RestaurantResponseDto(BigInteger id, String name, String thumUrl, String menu, String openingHours, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, String phoneNumber, BigInteger likeCount) {
@@ -46,6 +47,26 @@ public class RestaurantResponseDto {
         if(menu != null)
             this.menu = Arrays.stream(menu.split("`")).map(MenuDto::new).collect(Collectors.toList());
         this.like = likeCount.longValue();
+    }
+
+    /* 식당 검색 sql */
+    public RestaurantResponseDto(BigInteger id, String name, String thumUrl, String menu,
+                                 String openingHours, String address, String roadAddress,
+                                 BigDecimal longitude, BigDecimal latitude, String phoneNumber,
+                                 BigInteger likeCount, Double distance) {
+        this.id = id;
+        this.name = name;
+        this.thumUrl = thumUrl;
+        this.openingHours = openingHours;
+        this.address = address;
+        this.roadAddress = roadAddress;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.phoneNumber = phoneNumber;
+        if(menu != null)
+            this.menu = Arrays.stream(menu.split("`")).map(MenuDto::new).collect(Collectors.toList());
+        this.like = likeCount.longValue();
+        this.distance = distance;
     }
 
     public RestaurantResponseDto(BigInteger id, String name, String thumUrl, String menu, String categories, BigDecimal googleRating, Integer googleReviewCount, String openingHours, Integer priceLevel, String address, String roadAddress, BigDecimal longitude, BigDecimal latitude, BigInteger naverId, BigInteger googleId, String phoneNumber) {

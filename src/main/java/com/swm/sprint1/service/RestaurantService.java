@@ -27,7 +27,10 @@ public class RestaurantService {
     }
 
     public Page<RestaurantResponseDto> searchRestaurants(Pageable pageable, RestaurantSearchCondition condition) {
-        return restaurantRepository.searchRestaurants(pageable, condition);
+        if(condition.getFilter().equals("like")) {
+            return restaurantRepository.searchRestaurantsOrderByLikeCount(pageable, condition);
+        }
+        return restaurantRepository.searchRestaurantsOrderByDistance(pageable, condition);
     }
 
     public List<RestaurantResponseDto> findGameCards(List<Long> userIds, List<Long> restaurantIds, BigDecimal longitude, BigDecimal latitude, BigDecimal radius) {
