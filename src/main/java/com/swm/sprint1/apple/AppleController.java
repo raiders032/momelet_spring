@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -59,20 +60,20 @@ public class AppleController {
     /**
      * Apple login page Controller (SSL - https)
      *
-     * @param model
+     * @param attributes
      * @return
      */
     @GetMapping(value = "/apple/login")
-    public String appleLogin(ModelMap model) {
+    public String appleLogin(RedirectAttributes attributes) {
 
         Map<String, String> metaInfo = appleService.getLoginMetaInfo();
 
-        model.addAttribute("client_id", metaInfo.get("CLIENT_ID"));
-        model.addAttribute("redirect_uri", metaInfo.get("REDIRECT_URI"));
-        model.addAttribute("nonce", metaInfo.get("NONCE"));
-        model.addAttribute("response_type", "code id_token");
-        model.addAttribute("scope", "name email");
-        model.addAttribute("response_mode", "form_post");
+        attributes.addAttribute("client_id", metaInfo.get("CLIENT_ID"));
+        attributes.addAttribute("redirect_uri", metaInfo.get("REDIRECT_URI"));
+        attributes.addAttribute("nonce", metaInfo.get("NONCE"));
+        attributes.addAttribute("response_type", "code id_token");
+        attributes.addAttribute("scope", "name email");
+        attributes.addAttribute("response_mode", "form_post");
 
         return "redirect:https://appleid.apple.com/auth/authorize";
     }
