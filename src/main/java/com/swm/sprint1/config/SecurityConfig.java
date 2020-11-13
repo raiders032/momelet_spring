@@ -134,7 +134,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             "/ws/**",
                             "/upload/*",
                             "/apple/**",
-                            "/redirect")
+                            "/redirect",
+                            "/after")
                         .permitAll()
                     .antMatchers(AUTH_WHITELIST)
                         .permitAll()
