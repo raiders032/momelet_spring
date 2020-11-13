@@ -1,30 +1,40 @@
 package com.swm.sprint1.apple;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.swm.sprint1.config.AppProperties;
 import com.swm.sprint1.domain.AuthProvider;
 import com.swm.sprint1.domain.Category;
 import com.swm.sprint1.domain.User;
+import com.swm.sprint1.exception.BadRequestException;
 import com.swm.sprint1.payload.response.AuthResponse;
 import com.swm.sprint1.repository.category.CategoryRepository;
 import com.swm.sprint1.repository.user.UserRepository;
 import com.swm.sprint1.security.Token;
 import com.swm.sprint1.service.AuthService;
+import com.swm.sprint1.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.swm.sprint1.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @RequiredArgsConstructor
 @Controller
@@ -38,6 +48,8 @@ public class AppleController {
     private final AppProperties appProperties;
     private final AuthService authService;
     private final AppleService appleService;
+
+    private static final int cookieExpireSeconds = 180;
 
     /**
      * Sign in with Apple - JS Page (index.html)
@@ -64,7 +76,7 @@ public class AppleController {
      * @return
      */
     @GetMapping(value = "/apple/login")
-    public String appleLogin(RedirectAttributes attributes) {
+    public String appleLogin(RedirectAttributes attributes, HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> metaInfo = appleService.getLoginMetaInfo();
 
@@ -75,18 +87,17 @@ public class AppleController {
         attributes.addAttribute("scope", "name email");
         attributes.addAttribute("response_mode", "form_post");
 
+        String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
+        if (StringUtils.isNotBlank(redirectUriAfterLogin)) {
+            CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, redirectUriAfterLogin, cookieExpireSeconds);
+        }
+
         return "redirect:https://appleid.apple.com/auth/authorize";
     }
 
-    /**
-     * Apple Login 유저 정보를 받은 후 권한 생성
-     *
-     * @param serviceResponse
-     * @return
-     */
     @PostMapping(value = "/redirect")
     @ResponseBody
-    public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse) throws JOSEException, InvalidKeyException, IOException, URISyntaxException {
+    public String servicesRedirect(ServicesResponse serviceResponse, HttpServletRequest request, HttpServletResponse response) throws JOSEException, InvalidKeyException, IOException, URISyntaxException {
         logger.debug("servicesRedirect 호출");
         if (serviceResponse == null) {
             return null;
@@ -110,12 +121,34 @@ public class AppleController {
             user = registerNewUser(AuthProvider.apple, payload.getSub(), "이름을 변경 해주세요", payload.getEmail());
         }
 
+        SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy/MM/dd HH:mm:ss", Locale.KOREA );
+
+        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue);
+
+        if(!redirectUri.isPresent()) {
+            throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+        }
+        logger.debug("redirectUri" +redirectUri);
+        String targetUrl = redirectUri.orElse(("/"));
         AuthResponse accessAndRefreshToken = authService.createAccessAndRefreshToken(user.getId());
+        Token accessToken = accessAndRefreshToken.getAccessToken();
+        Token refreshToken = accessAndRefreshToken.getRefreshToken();
+
+        String uriString = UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("accessToken", accessToken.getJwtToken())
+                .queryParam("accessTokenExpiryDate", formatter.format(accessToken.getExpiryDate()))
+                .queryParam("refreshToken", refreshToken.getJwtToken())
+                .queryParam("refreshTokenExpiryDate", formatter.format(refreshToken.getExpiryDate()))
+                .build().toUriString();
+        return "redirect:" + uriString;
+
+       /* AuthResponse accessAndRefreshToken = authService.createAccessAndRefreshToken(user.getId());
         Token accessToken = accessAndRefreshToken.getAccessToken();
         Token refreshToken = accessAndRefreshToken.getRefreshToken();
         logger.debug("jwt 토큰 생성완료");
 
-        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
+        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));*/
 
     }
 
@@ -143,6 +176,11 @@ public class AppleController {
         logger.debug("[/path/to/endpoint] RequestBody ‣ " + appsResponse.getPayload());
     }
 
+    @GetMapping("/after")
+    @ResponseBody
+    public String afterAppleLogin(){
+        return "good";
+    }
 
     private User registerNewUser(AuthProvider authProvider, String providerId, String name, String email) {
         AuthProvider provider = authProvider;
