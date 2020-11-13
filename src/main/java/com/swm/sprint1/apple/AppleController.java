@@ -16,16 +16,21 @@ import com.swm.sprint1.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.text.SimpleDateFormat;
@@ -97,7 +102,7 @@ public class AppleController {
 
     @PostMapping(value = "/redirect")
     @ResponseBody
-    public String servicesRedirect(ServicesResponse serviceResponse, HttpServletRequest request, HttpServletResponse response) throws JOSEException, InvalidKeyException, IOException, URISyntaxException {
+    public ResponseEntity<?> servicesRedirect(ServicesResponse serviceResponse, HttpServletRequest request, HttpServletResponse response) throws JOSEException, InvalidKeyException, IOException, URISyntaxException {
         logger.debug("servicesRedirect 호출");
         if (serviceResponse == null) {
             return null;
@@ -135,21 +140,16 @@ public class AppleController {
         Token accessToken = accessAndRefreshToken.getAccessToken();
         Token refreshToken = accessAndRefreshToken.getRefreshToken();
 
-        String uriString = UriComponentsBuilder.fromUriString(targetUrl)
+        URI uri = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", accessToken.getJwtToken())
                 .queryParam("accessTokenExpiryDate", formatter.format(accessToken.getExpiryDate()))
                 .queryParam("refreshToken", refreshToken.getJwtToken())
                 .queryParam("refreshTokenExpiryDate", formatter.format(refreshToken.getExpiryDate()))
-                .build().toUriString();
-        return "redirect:" + uriString;
+                .build().toUri();
 
-       /* AuthResponse accessAndRefreshToken = authService.createAccessAndRefreshToken(user.getId());
-        Token accessToken = accessAndRefreshToken.getAccessToken();
-        Token refreshToken = accessAndRefreshToken.getRefreshToken();
-        logger.debug("jwt 토큰 생성완료");
-
-        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));*/
-
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(uri);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
     /**
