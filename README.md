@@ -8,7 +8,7 @@ master 브랜치에 push 이벤트 발생시 jenkins 와 AWS codedepoly를 통�
 
 # 백엔드 API 서버
 Spring Boot로 개발한 REST API 서버의 소스코드.
-주요기능은 아래와 같음.
+주요기능은 아래와 같음
 
 1. OAuth2 소셜 로그인 (구글, 카카오, 네이버, 애플)
 2. 유저의 위치, 취향 정보에 맞는 식당 정보 제공
