@@ -85,4 +85,13 @@ public class RestaurantController {
         response.putData("restaurants", restaurants);
         return ResponseEntity.ok(response);
     }
+
+    @ApiOperation(value="식당 조회", notes = "식당을 조회합니다.")
+    @GetMapping("/api/v1/restaurants/{restaurantId}")
+    public ResponseEntity<?> getRestaurant(@PathVariable Long restaurantId){
+        RestaurantResponseDto dto = restaurantService.findDtoById(restaurantId);
+        ApiResponse response = new ApiResponse(true);
+        response.putData("restaurant", dto);
+        return ResponseEntity.ok(response);
+    }
 }

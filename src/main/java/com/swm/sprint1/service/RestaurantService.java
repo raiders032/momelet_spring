@@ -1,5 +1,6 @@
 package com.swm.sprint1.service;
 
+import com.swm.sprint1.exception.ResourceNotFoundException;
 import com.swm.sprint1.exception.RestaurantLessThan7Exception;
 import com.swm.sprint1.payload.request.RestaurantSearchCondition;
 import com.swm.sprint1.payload.response.RestaurantResponseDto;
@@ -53,5 +54,13 @@ public class RestaurantService {
         if(restaurants.size() < 7 )
             throw new RestaurantLessThan7Exception("식당 카드가 7장 미만입니다.");
         return restaurants;
+    }
+
+    public RestaurantResponseDto findDtoById(Long restaurantId) {
+        List<RestaurantResponseDto> dtosById = restaurantRepository.findDtosById(Arrays.asList(restaurantId));
+        if(!dtosById.isEmpty())
+            return dtosById.get(0);
+        else
+            throw new ResourceNotFoundException("Restaurant", "id", restaurantId, "210");
     }
 }
