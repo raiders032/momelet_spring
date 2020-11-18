@@ -41,8 +41,10 @@ public class BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
-    public Page<BookmarkResponseDto> findDtosByUserId(Long userId, Pageable pageable) {
-        return bookmarkRepository.findDtosByUserId(userId, pageable);
+    public Page<BookmarkResponseDto> findDtosByUserId(Long userId, String filter, Pageable pageable) {
+        if(filter.equals("like"))
+            return bookmarkRepository.findDtosByUserIdOrderByLike(userId, pageable);
+        return bookmarkRepository.findDtosByUserIdOrderById(userId, pageable);
     }
 }
 

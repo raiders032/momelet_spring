@@ -6,4 +6,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface BookmarkRepositoryCustom {
     Page<BookmarkResponseDto> findDtosByUserId(Long userId, Pageable pageable);
+
+    Page<BookmarkResponseDto> findDtosByUserIdOrderByLike(Long userId, Pageable pageable);
+
+    Page<BookmarkResponseDto> findDtosByUserIdOrderById(Long userId, Pageable pageable);
 }

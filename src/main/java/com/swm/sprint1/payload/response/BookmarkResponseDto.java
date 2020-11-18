@@ -17,7 +17,7 @@ public class BookmarkResponseDto {
     private Long restaurantId;
     private String name;
     private String thumUrl;
-    private Long like;
+    private Long likecnt;
     private BigDecimal longitude;
     private BigDecimal latitude;
 

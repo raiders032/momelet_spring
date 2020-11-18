@@ -32,8 +32,9 @@ public class BookmarkController {
     @ApiOperation(value = "북마크 조회", notes = "북마크를 조회합니다.")
     @GetMapping("/api/v1/bookmarks")
     public ResponseEntity<?> createBookmark(@CurrentUser UserPrincipal userPrincipal,
-                                            Pageable pageable){
-        Page<BookmarkResponseDto> bookmarks = bookmarkService.findDtosByUserId(userPrincipal.getId(), pageable);
+                                            Pageable pageable,
+                                            @RequestParam(required = false, defaultValue = "id") String filter){
+        Page<BookmarkResponseDto> bookmarks = bookmarkService.findDtosByUserId(userPrincipal.getId(), filter, pageable);
         ApiResponse response = new ApiResponse(true, "북마크 조회 완료");
         response.putData("bookmarks", bookmarks);
         return ResponseEntity.ok(response);
